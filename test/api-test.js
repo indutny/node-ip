@@ -30,4 +30,13 @@ describe('IP library for node.js', function() {
       assert.equal(ip.mask('192.168.1.134', '::ffff:ff00'), '::ffff:c0a8:100');
     });
   });
+
+  describe('isEqual() method', function() {
+    it('should check if addresses are equal', function() {
+      assert(ip.isEqual('127.0.0.1', '::7f00:1'));
+      assert(!ip.isEqual('127.0.0.1', '::7f00:2'));
+      assert(ip.isEqual('127.0.0.1', '::ffff:7f00:1'));
+      assert(!ip.isEqual('127.0.0.1', '::ffaf:7f00:1'));
+    });
+  });
 });
