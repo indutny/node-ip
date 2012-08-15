@@ -1,0 +1,17 @@
+{
+  "name": "ip",
+  "version": "0.0.1",
+  "author": "Fedor Indutny <fedor@indutny.com>",
+  "homepage": "https://github.com/indutny/node-ip",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/indutny/node-ip.git"
+  },
+  "main": "lib/ip",
+  "devDependencies": {
+    "mocha": "~1.3.2"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec test/*-test.js"
+  }
+}
