@@ -1,5 +1,7 @@
 var ip = require('..'),
-    assert = require('assert');
+    assert = require('assert'),
+    net = require('net'),
+    os = require('os');
 
 describe('IP library for node.js', function() {
   describe('toBuffer()/toString() methods', function() {
@@ -76,6 +78,90 @@ describe('IP library for node.js', function() {
     
     it('should check if an address is from the internet', function() {
       assert.equal(ip.isPrivate('165.225.132.33'), false); // joyent.com
+    });
+  });
+  
+  describe('local() method', function () {
+    describe('undefined', function () {
+      it('should respond with 127.0.0.1', function () {
+        assert.equal(ip.local(), '127.0.0.1')
+      });
+    });
+
+    describe('ipv4', function () {
+      it('should respond with 127.0.0.1', function () {
+        assert.equal(ip.local('ipv4'), '127.0.0.1')
+      });
+    });
+
+    describe('ipv6', function () {
+      it('should respond with fe80::1', function () {
+        assert.equal(ip.local('ipv6'), 'fe80::1')
+      });
+    });
+  });
+
+  describe('isLocal() method', function () {
+    describe('127.0.0.1', function () {
+      it('should respond with true', function () {
+        assert.ok(ip.isLocal('127.0.0.1'))
+      });
+    });
+
+    describe('8.8.8.8', function () {
+      it('should respond with false', function () {
+        assert.equal(ip.isLocal('8.8.8.8'), false);
+      });
+    });
+
+    describe('fe80::1', function () {
+      it('should respond with true', function () {
+        assert.ok(ip.isLocal('fe80::1'))
+      });
+    });
+
+    describe('::1', function () {
+      it('should respond with true', function () {
+        assert.ok(ip.isLocal('::1'))
+      });
+    });
+  });
+
+  describe('address() method', function () {
+    describe('undefined', function () {
+      it('should respond with a private ip', function () {
+        assert.ok(ip.isPrivate(ip.address()));
+      });
+    });
+
+    describe('private', function () {
+      [undefined, 'ipv4', 'ipv6'].forEach(function (family) {
+        describe(family, function () {
+          it('should respond with a private ip', function () {
+            assert.ok(ip.isPrivate(ip.address('private', family)));
+          });
+        });
+      });
+    });
+
+    var interfaces = os.networkInterfaces();
+
+    Object.keys(interfaces).forEach(function (nic) {
+      describe(nic, function () {
+        [undefined, 'ipv4'].forEach(function (family) {
+          describe(family, function () {
+            it('should respond with an ipv4 address', function () {
+              assert.ok(net.isIPv4(ip.address(nic, family)));
+            });
+          });
+        });
+
+        describe('ipv6', function () {
+          it('should respond with an ipv6 address', function () {
+            assert.ok(net.isIPv6(ip.address(nic, 'ipv6')));
+          });
+        })
+      });
     });
   });
 });
