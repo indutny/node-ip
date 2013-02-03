@@ -81,48 +81,48 @@ describe('IP library for node.js', function() {
     });
   });
   
-  describe('local() method', function () {
+  describe('loopback() method', function () {
     describe('undefined', function () {
       it('should respond with 127.0.0.1', function () {
-        assert.equal(ip.local(), '127.0.0.1')
+        assert.equal(ip.loopback(), '127.0.0.1')
       });
     });
 
     describe('ipv4', function () {
       it('should respond with 127.0.0.1', function () {
-        assert.equal(ip.local('ipv4'), '127.0.0.1')
+        assert.equal(ip.loopback('ipv4'), '127.0.0.1')
       });
     });
 
     describe('ipv6', function () {
       it('should respond with fe80::1', function () {
-        assert.equal(ip.local('ipv6'), 'fe80::1')
+        assert.equal(ip.loopback('ipv6'), 'fe80::1')
       });
     });
   });
 
-  describe('isLocal() method', function () {
+  describe('isLoopback() method', function () {
     describe('127.0.0.1', function () {
       it('should respond with true', function () {
-        assert.ok(ip.isLocal('127.0.0.1'))
+        assert.ok(ip.isLoopback('127.0.0.1'))
       });
     });
 
     describe('8.8.8.8', function () {
       it('should respond with false', function () {
-        assert.equal(ip.isLocal('8.8.8.8'), false);
+        assert.equal(ip.isLoopback('8.8.8.8'), false);
       });
     });
 
     describe('fe80::1', function () {
       it('should respond with true', function () {
-        assert.ok(ip.isLocal('fe80::1'))
+        assert.ok(ip.isLoopback('fe80::1'))
       });
     });
 
     describe('::1', function () {
       it('should respond with true', function () {
-        assert.ok(ip.isLocal('::1'))
+        assert.ok(ip.isLoopback('::1'))
       });
     });
   });
