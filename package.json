@@ -1,6 +1,6 @@
 {
   "name": "ip",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Fedor Indutny <fedor@indutny.com>",
   "homepage": "https://github.com/indutny/node-ip",
   "repository": {
