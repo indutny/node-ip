@@ -26,6 +26,18 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('or() method', function() {
+    it('should or bits in ipv4 addresses', function() {
+      assert.equal(ip.or('0.0.0.255', '192.168.1.10'), '192.168.1.255');
+    });
+    it('should or bits in ipv6 addresses', function() {
+      assert.equal(ip.or('::ff', '::abcd:dcba:abcd:dcba'), '::abcd:dcba:abcd:dcff');
+    });
+    it('should or bits in mixed addresses', function() {
+      assert.equal(ip.or('0.0.0.255', '::abcd:dcba:abcd:dcba'), '::abcd:dcba:abcd:dcff');
+    });
+  });
+
   describe('mask() method', function() {
     it('should mask bits in address', function() {
       assert.equal(ip.mask('192.168.1.134', '255.255.255.0'), '192.168.1.0');
