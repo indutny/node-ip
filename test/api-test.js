@@ -20,6 +20,18 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('fromPrefixLen() method', function() {
+    it('should create IPv4 mask', function() {
+      assert.equal(ip.fromPrefixLen(24), '255.255.255.0');
+    });
+    it('should create IPv6 mask', function() {
+      assert.equal(ip.fromPrefixLen(64), 'ffff:ffff:ffff:ffff::');
+    });
+    it('should create IPv6 mask explicitly', function() {
+      assert.equal(ip.fromPrefixLen(24, 'IPV6'), 'ffff:ff00::');
+    });
+  });
+
   describe('not() method', function() {
     it('should reverse bits in address', function() {
       assert.equal(ip.not('255.255.255.0'), '0.0.0.255');
