@@ -15,6 +15,12 @@ ip.mask('192.168.1.134', '255.255.255.0') // 192.168.1.0
 ip.not('255.255.255.0') // 0.0.0.255
 ip.or('192.168.1.134', '0.0.0.255') // 192.168.1.255
 ip.isPrivate('127.0.0.1') // true
+
+// operate on buffers in-place
+var buf = new Buffer(128);
+var offset = 64;
+ip.toBuffer('127.0.0.1', buf, offset);  // [127, 0, 0, 1] at offset 64
+ip.toString(buf, offset, 4);            // '127.0.0.1'
 ```
 
 ### License
