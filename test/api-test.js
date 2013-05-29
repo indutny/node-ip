@@ -208,4 +208,20 @@ describe('IP library for node.js', function() {
       });
     });
   });
+  
+  
+  describe('toLong() method', function(){
+    it('should respond with a int', function(){
+      assert.equal(ip.toLong('127.0.0.1'), 2130706433);
+      assert.equal(ip.toLong('255.255.255.255'), 4294967295);
+    });
+  });
+  
+  describe('fromLong() method', function(){
+    it('should repond with ipv4 address', function(){
+      assert.equal(ip.fromLong(2130706433), '127.0.0.1');
+      assert.equal(ip.fromLong(4294967295), '255.255.255.255');
+    });
+  })
+  
 });
