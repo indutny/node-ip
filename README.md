@@ -21,6 +21,11 @@ var buf = new Buffer(128);
 var offset = 64;
 ip.toBuffer('127.0.0.1', buf, offset);  // [127, 0, 0, 1] at offset 64
 ip.toString(buf, offset, 4);            // '127.0.0.1'
+
+
+// ipv4 long conversion
+ip.toLong('127.0.0.1'); // 2130706433
+ip.fromLong(2130706433); // '127.0.0.1'
 ```
 
 ### License
