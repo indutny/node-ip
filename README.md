@@ -1,12 +1,13 @@
 # IP
-
 IP address utilities for node.js
 
 ## Usage
+Get your ip address, compare ip addresses, validate ip addresses, etc.
 
 ```
 var ip = require('ip');
 
+ip.address() // my ip address
 ip.isEqual('::1', '::0:1'); // true
 ip.toBuffer('127.0.0.1') // Buffer([127, 0, 0, 1])
 ip.toString(new Buffer([127, 0, 0, 1])) // 127.0.0.1
