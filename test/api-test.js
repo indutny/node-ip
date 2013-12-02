@@ -175,6 +175,12 @@ describe('IP library for node.js', function() {
         assert.ok(ip.isLoopback('::1'))
       });
     });
+
+    describe('::', function () {
+      it('should respond with true', function () {
+        assert.ok(ip.isLoopback('::'))
+      });
+    });
   });
 
   describe('address() method', function () {
