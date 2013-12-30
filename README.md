@@ -24,6 +24,18 @@ var offset = 64;
 ip.toBuffer('127.0.0.1', buf, offset);  // [127, 0, 0, 1] at offset 64
 ip.toString(buf, offset, 4);            // '127.0.0.1'
 
+// subnet information
+ip.subnet('192.168.1.134', '255.255.255.192')
+// { networkAddress: '192.168.1.128',
+//   firstAddress: '192.168.1.129',
+//   lastAddress: '192.168.1.190',
+//   broadcastAddress: '192.168.1.191',
+//   subnetMask: '255.255.255.192',
+//   subnetMaskLength: 26,
+//   numHosts: 62,
+//   length: 64 }
+ip.cidr('192.168.1.134/26')
+// Same as previous.
 
 // ipv4 long conversion
 ip.toLong('127.0.0.1'); // 2130706433
