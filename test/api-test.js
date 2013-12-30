@@ -77,6 +77,13 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('cidr() method', function() {
+    it('should mask address in CIDR notation', function() {
+      assert.equal(ip.cidr('192.168.1.134/26'), '192.168.1.128');
+      assert.equal(ip.cidr('2607:f0d0:1002:51::4/56'), '2607:f0d0:1002::');
+    });
+  });
+
   describe('isEqual() method', function() {
     it('should check if addresses are equal', function() {
       assert(ip.isEqual('127.0.0.1', '::7f00:1'));
