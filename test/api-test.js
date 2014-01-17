@@ -98,10 +98,13 @@ describe('IP library for node.js', function() {
       assert.equal(ip.isPrivate('192.162.1.2'), false);
     });
     
-    it('should check if an address is from a 172.16.x.x network', function() {
+    it('should check if an address is from a 172.(16-31).x.x network', function() {
       assert.equal(ip.isPrivate('172.16.0.5'), true);
       assert.equal(ip.isPrivate('172.16.123.254'), true);
       assert.equal(ip.isPrivate('171.16.0.5'), false);
+      assert.equal(ip.isPrivate('172.25.232.15'), true);
+      assert.equal(ip.isPrivate('172.15.0.5'), false);
+      assert.equal(ip.isPrivate('172.32.0.5'), false);
     });
     
     it('should check if an address is from a 169.254.x.x network', function() {
