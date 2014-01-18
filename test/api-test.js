@@ -79,6 +79,87 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('subnet() method', function() {
+    // Test cases calculated with http://www.subnet-calculator.com/
+    var ipv4Subnet = ip.subnet('192.168.1.134', '255.255.255.192');
+
+    it('should compute an ipv4 network address given an address and a mask', function() {
+      assert.equal(ipv4Subnet.networkAddress, '192.168.1.128');
+    });
+
+    it('should compute an ipv4 network\'s first address given an address and a mask', function() {
+      assert.equal(ipv4Subnet.firstAddress, '192.168.1.129');
+    });
+
+    it('should compute an ipv4 network\'s last address given an address and a mask', function() {
+      assert.equal(ipv4Subnet.lastAddress, '192.168.1.190');
+    });
+
+    it('should compute an ipv4 broadcast address given an address and a mask', function() {
+      assert.equal(ipv4Subnet.broadcastAddress, '192.168.1.191');
+    });
+
+    it('should compute an ipv4 subnet number of addresses given an address and a mask', function() {
+      assert.equal(ipv4Subnet.length, 64);
+    });
+
+    it('should compute an ipv4 subnet number of addressable hosts given an address and a mask', function() {
+      assert.equal(ipv4Subnet.numHosts, 62);
+    });
+
+    it('should compute an ipv4 subnet mask given an address and a mask', function() {
+      assert.equal(ipv4Subnet.subnetMask, '255.255.255.192');
+    });
+
+    it('should compute an ipv4 subnet mask\'s length given an address and a mask', function() {
+      assert.equal(ipv4Subnet.subnetMaskLength, 26);
+    });
+  });
+
+  describe('cidrSubnet() method', function() {
+    // Test cases calculated with http://www.subnet-calculator.com/
+    var ipv4Subnet = ip.cidrSubnet('192.168.1.134/26');
+
+    it('should compute an ipv4 network address given a CIDR subnet', function() {
+      assert.equal(ipv4Subnet.networkAddress, '192.168.1.128');
+    });
+
+    it('should compute an ipv4 network\'s first address given a CIDR subnet', function() {
+      assert.equal(ipv4Subnet.firstAddress, '192.168.1.129');
+    });
+
+    it('should compute an ipv4 network\'s last address given a CIDR subnet', function() {
+      assert.equal(ipv4Subnet.lastAddress, '192.168.1.190');
+    });
+
+    it('should compute an ipv4 broadcast address given a CIDR subnet', function() {
+      assert.equal(ipv4Subnet.broadcastAddress, '192.168.1.191');
+    });
+
+    it('should compute an ipv4 subnet number of addresses given a CIDR subnet', function() {
+      assert.equal(ipv4Subnet.length, 64);
+    });
+
+    it('should compute an ipv4 subnet number of addressable hosts given a CIDR subnet', function() {
+      assert.equal(ipv4Subnet.numHosts, 62);
+    });
+
+    it('should compute an ipv4 subnet mask given a CIDR subnet', function() {
+      assert.equal(ipv4Subnet.subnetMask, '255.255.255.192');
+    });
+
+    it('should compute an ipv4 subnet mask\'s length given a CIDR subnet', function() {
+      assert.equal(ipv4Subnet.subnetMaskLength, 26);
+    });
+  });
+
+  describe('cidr() method', function() {
+    it('should mask address in CIDR notation', function() {
+      assert.equal(ip.cidr('192.168.1.134/26'), '192.168.1.128');
+      assert.equal(ip.cidr('2607:f0d0:1002:51::4/56'), '2607:f0d0:1002::');
+    });
+  });
+
   describe('isEqual() method', function() {
     it('should check if addresses are equal', function() {
       assert(ip.isEqual('127.0.0.1', '::7f00:1'));
