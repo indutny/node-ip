@@ -81,35 +81,35 @@ describe('IP library for node.js', function() {
     // Test cases calculated with http://www.subnet-calculator.com/
     var ipv4Subnet = ip.subnet('192.168.1.134', '255.255.255.192');
 
-    it('should compute an ipv4 network address given an address and a mask', function() {
+    it('should compute ipv4 network address', function() {
       assert.equal(ipv4Subnet.networkAddress, '192.168.1.128');
     });
 
-    it('should compute an ipv4 network\'s first address given an address and a mask', function() {
+    it('should compute ipv4 network\'s first address', function() {
       assert.equal(ipv4Subnet.firstAddress, '192.168.1.129');
     });
 
-    it('should compute an ipv4 network\'s last address given an address and a mask', function() {
+    it('should compute ipv4 network\'s last address', function() {
       assert.equal(ipv4Subnet.lastAddress, '192.168.1.190');
     });
 
-    it('should compute an ipv4 broadcast address given an address and a mask', function() {
+    it('should compute ipv4 broadcast address', function() {
       assert.equal(ipv4Subnet.broadcastAddress, '192.168.1.191');
     });
 
-    it('should compute an ipv4 subnet number of addresses given an address and a mask', function() {
+    it('should compute ipv4 subnet number of addresses', function() {
       assert.equal(ipv4Subnet.length, 64);
     });
 
-    it('should compute an ipv4 subnet number of addressable hosts given an address and a mask', function() {
+    it('should compute ipv4 subnet number of addressable hosts', function() {
       assert.equal(ipv4Subnet.numHosts, 62);
     });
 
-    it('should compute an ipv4 subnet mask given an address and a mask', function() {
+    it('should compute ipv4 subnet mask', function() {
       assert.equal(ipv4Subnet.subnetMask, '255.255.255.192');
     });
 
-    it('should compute an ipv4 subnet mask\'s length given an address and a mask', function() {
+    it('should compute ipv4 subnet mask\'s length', function() {
       assert.equal(ipv4Subnet.subnetMaskLength, 26);
     });
   });
@@ -118,35 +118,35 @@ describe('IP library for node.js', function() {
     // Test cases calculated with http://www.subnet-calculator.com/
     var ipv4Subnet = ip.cidrSubnet('192.168.1.134/26');
 
-    it('should compute an ipv4 network address given a CIDR subnet', function() {
+    it('should compute an ipv4 network address', function() {
       assert.equal(ipv4Subnet.networkAddress, '192.168.1.128');
     });
 
-    it('should compute an ipv4 network\'s first address given a CIDR subnet', function() {
+    it('should compute an ipv4 network\'s first address', function() {
       assert.equal(ipv4Subnet.firstAddress, '192.168.1.129');
     });
 
-    it('should compute an ipv4 network\'s last address given a CIDR subnet', function() {
+    it('should compute an ipv4 network\'s last address', function() {
       assert.equal(ipv4Subnet.lastAddress, '192.168.1.190');
     });
 
-    it('should compute an ipv4 broadcast address given a CIDR subnet', function() {
+    it('should compute an ipv4 broadcast address', function() {
       assert.equal(ipv4Subnet.broadcastAddress, '192.168.1.191');
     });
 
-    it('should compute an ipv4 subnet number of addresses given a CIDR subnet', function() {
+    it('should compute an ipv4 subnet number of addresses', function() {
       assert.equal(ipv4Subnet.length, 64);
     });
 
-    it('should compute an ipv4 subnet number of addressable hosts given a CIDR subnet', function() {
+    it('should compute an ipv4 subnet number of addressable hosts', function() {
       assert.equal(ipv4Subnet.numHosts, 62);
     });
 
-    it('should compute an ipv4 subnet mask given a CIDR subnet', function() {
+    it('should compute an ipv4 subnet mask', function() {
       assert.equal(ipv4Subnet.subnetMask, '255.255.255.192');
     });
 
-    it('should compute an ipv4 subnet mask\'s length given a CIDR subnet', function() {
+    it('should compute an ipv4 subnet mask\'s length', function() {
       assert.equal(ipv4Subnet.subnetMaskLength, 26);
     });
   });
@@ -166,46 +166,46 @@ describe('IP library for node.js', function() {
       assert(!ip.isEqual('127.0.0.1', '::ffaf:7f00:1'));
     });
   });
-  
+
 
   describe('isPrivate() method', function() {
     it('should check if an address is localhost', function() {
       assert.equal(ip.isPrivate('127.0.0.1'), true);
     });
-    
+
     it('should check if an address is from a 192.168.x.x network', function() {
       assert.equal(ip.isPrivate('192.168.0.123'), true);
       assert.equal(ip.isPrivate('192.168.122.123'), true);
       assert.equal(ip.isPrivate('192.162.1.2'), false);
     });
-    
+
     it('should check if an address is from a 172.16.x.x network', function() {
       assert.equal(ip.isPrivate('172.16.0.5'), true);
       assert.equal(ip.isPrivate('172.16.123.254'), true);
       assert.equal(ip.isPrivate('171.16.0.5'), false);
     });
-    
+
     it('should check if an address is from a 169.254.x.x network', function() {
       assert.equal(ip.isPrivate('169.254.2.3'), true);
       assert.equal(ip.isPrivate('169.254.221.9'), true);
       assert.equal(ip.isPrivate('168.254.2.3'), false);
     });
-    
+
     it('should check if an address is from a 10.x.x.x network', function() {
       assert.equal(ip.isPrivate('10.0.2.3'), true);
       assert.equal(ip.isPrivate('10.1.23.45'), true);
       assert.equal(ip.isPrivate('12.1.2.3'), false);
     });
-    
+
     it('should check if an address is from a private IPv6 network', function() {
       assert.equal(ip.isPrivate('fe80::f2de:f1ff:fe3f:307e'), true);
     });
-    
+
     it('should check if an address is from the internet', function() {
       assert.equal(ip.isPrivate('165.225.132.33'), false); // joyent.com
     });
   });
-  
+
   describe('loopback() method', function () {
     describe('undefined', function () {
       it('should respond with 127.0.0.1', function () {
@@ -289,20 +289,20 @@ describe('IP library for node.js', function() {
       });
     });
   });
-  
-  
+
+
   describe('toLong() method', function(){
     it('should respond with a int', function(){
       assert.equal(ip.toLong('127.0.0.1'), 2130706433);
       assert.equal(ip.toLong('255.255.255.255'), 4294967295);
     });
   });
-  
+
   describe('fromLong() method', function(){
     it('should repond with ipv4 address', function(){
       assert.equal(ip.fromLong(2130706433), '127.0.0.1');
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
     });
   })
-  
+
 });
