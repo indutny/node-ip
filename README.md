@@ -34,7 +34,7 @@ ip.subnet('192.168.1.134', '255.255.255.192')
 //   subnetMaskLength: 26,
 //   numHosts: 62,
 //   length: 64 }
-ip.cidr('192.168.1.134/26')
+ip.cidrSubnet('192.168.1.134/26')
 // Same as previous.
 
 // ipv4 long conversion
