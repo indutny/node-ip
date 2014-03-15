@@ -1,5 +1,13 @@
-# IP
-IP address utilities for node.js
+# IP | IP address utilities for node.js
+
+[![NPM](https://nodei.co/npm/ip.png)](https://nodei.co/npm/ip/)
+
+
+## Install
+
+```bash
+$ npm install jsdom
+```
 
 ## Usage
 Get your ip address, compare ip addresses, validate ip addresses, etc.
