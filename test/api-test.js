@@ -116,6 +116,38 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('subnet() method with mask length 32', function() {
+    // Test cases calculated with http://www.subnet-calculator.com/
+    var ipv4Subnet = ip.subnet('192.168.1.134', '255.255.255.255');
+    it('should compute ipv4 network\'s first address', function() {
+      assert.equal(ipv4Subnet.firstAddress, '192.168.1.134');
+    });
+
+    it('should compute ipv4 network\'s last address', function() {
+      assert.equal(ipv4Subnet.lastAddress, '192.168.1.134');
+    });
+
+    it('should compute ipv4 subnet number of addressable hosts', function() {
+      assert.equal(ipv4Subnet.numHosts, 1);
+    });
+  });
+
+  describe('subnet() method with mask length 31', function() {
+    // Test cases calculated with http://www.subnet-calculator.com/
+    var ipv4Subnet = ip.subnet('192.168.1.134', '255.255.255.254');
+    it('should compute ipv4 network\'s first address', function() {
+      assert.equal(ipv4Subnet.firstAddress, '192.168.1.134');
+    });
+
+    it('should compute ipv4 network\'s last address', function() {
+      assert.equal(ipv4Subnet.lastAddress, '192.168.1.135');
+    });
+
+    it('should compute ipv4 subnet number of addressable hosts', function() {
+      assert.equal(ipv4Subnet.numHosts, 2);
+    });
+  });
+
   describe('cidrSubnet() method', function() {
     // Test cases calculated with http://www.subnet-calculator.com/
     var ipv4Subnet = ip.cidrSubnet('192.168.1.134/26');
