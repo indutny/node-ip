@@ -209,6 +209,12 @@ describe('IP library for node.js', function() {
     it('should check if an address is from the internet', function() {
       assert.equal(ip.isPrivate('165.225.132.33'), false); // joyent.com
     });
+
+    it('should check if an address is a loopback IPv6 address', function() {
+      assert.equal(ip.isPrivate('::'), true);
+      assert.equal(ip.isPrivate('::1'), true);
+      assert.equal(ip.isPrivate('fe80::1'), true);
+    });
   });
 
   describe('loopback() method', function () {
@@ -253,6 +259,12 @@ describe('IP library for node.js', function() {
     describe('::1', function () {
       it('should respond with true', function () {
         assert.ok(ip.isLoopback('::1'))
+      });
+    });
+
+    describe('::', function () {
+      it('should respond with true', function () {
+        assert.ok(ip.isLoopback('::'))
       });
     });
   });
