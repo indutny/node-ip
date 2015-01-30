@@ -40,6 +40,12 @@ describe('IP library for node.js', function() {
       assert.equal(ip.toString(ip.toBuffer('abcd::dcba', buf, offset),
                                offset, 16), 'abcd::dcba');
     });
+
+    it('should convert to buffer IPv6 mapped IPv4 address', function() {
+      var buf = ip.toBuffer('::ffff:127.0.0.1');
+      assert.equal(buf.toString('hex'), '7f000001');
+      assert.equal(ip.toString(buf), '127.0.0.1');
+    });
   });
 
   describe('fromPrefixLen() method', function() {
@@ -200,6 +206,8 @@ describe('IP library for node.js', function() {
       assert(!ip.isEqual('127.0.0.1', '::7f00:2'));
       assert(ip.isEqual('127.0.0.1', '::ffff:7f00:1'));
       assert(!ip.isEqual('127.0.0.1', '::ffaf:7f00:1'));
+      assert(ip.isEqual('::ffff:127.0.0.1', '::ffff:127.0.0.1'));
+      assert(ip.isEqual('::ffff:127.0.0.1', '127.0.0.1'));
     });
   });
 
