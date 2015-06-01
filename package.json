@@ -13,5 +13,6 @@
   },
   "scripts": {
     "test": "mocha --reporter spec test/*-test.js"
-  }
+  },
+  "license": "MIT"
 }
