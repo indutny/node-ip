@@ -114,6 +114,10 @@ describe('IP library for node.js', function() {
     it('should compute ipv4 subnet mask\'s length', function() {
       assert.equal(ipv4Subnet.subnetMaskLength, 26);
     });
+		
+		it('should compute ipv4 class', function() {
+			assert.equal(ipv4Subnet.netClass, 'C'); 
+		});
   });
 
   describe('subnet() method with mask length 32', function() {
@@ -183,6 +187,10 @@ describe('IP library for node.js', function() {
     it('should compute an ipv4 subnet mask\'s length', function() {
       assert.equal(ipv4Subnet.subnetMaskLength, 26);
     });
+
+		it('should compute ipv4 class', function() {
+			assert.equal(ipv4Subnet.netClass, 'C'); 
+		});
   });
 
   describe('cidr() method', function() {
@@ -351,5 +359,27 @@ describe('IP library for node.js', function() {
       assert.equal(ip.fromLong(2130706433), '127.0.0.1');
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
     });
-  })
+  });
+
+	describe('netClass() method', function() {
+		it('should respond with class A', function() {
+			assert.equal(ip.netClass('10.168.0.0'), 'A');
+		});
+		it('should respond with class B', function() {
+			assert.equal(ip.netClass('172.16.0.0'), 'B');
+		});
+		it('should respond with class C', function() {
+			assert.equal(ip.netClass('192.168.0.0'), 'C');
+		});
+		it('should throw error \"addr must be string\"', function() {
+			assert.throws(function() {
+				ip.netClass(123132132);
+			}, /string/);
+		});
+		it('should throw error \"family must be ipv4\"', function() {
+			assert.throws(function() {
+				ip.netClass('abcd::dcba');
+			}, /ipv4/);
+		});
+	});
 });

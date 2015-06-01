@@ -17,6 +17,7 @@ ip.cidr('192.168.1.134/26') // 192.168.1.128
 ip.not('255.255.255.0') // 0.0.0.255
 ip.or('192.168.1.134', '0.0.0.255') // 192.168.1.255
 ip.isPrivate('127.0.0.1') // true
+ip.netClass('192.168.1.134') // C
 
 // operate on buffers in-place
 var buf = new Buffer(128);
@@ -33,7 +34,9 @@ ip.subnet('192.168.1.134', '255.255.255.192')
 //   subnetMask: '255.255.255.192',
 //   subnetMaskLength: 26,
 //   numHosts: 62,
-//   length: 64 }
+//   length: 64,
+//	 netClass : 'C' }
+
 ip.cidrSubnet('192.168.1.134/26')
 // Same as previous.
 
