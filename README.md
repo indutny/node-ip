@@ -4,7 +4,7 @@ IP address utilities for node.js
 ## Usage
 Get your ip address, compare ip addresses, validate ip addresses, etc.
 
-```
+```js
 var ip = require('ip');
 
 ip.address() // my ip address
