@@ -1,7 +1,8 @@
 var ip = require('..'),
     assert = require('assert'),
     net = require('net'),
-    os = require('os');
+    os = require('os'),
+    describe = require('describe');
 
 describe('IP library for node.js', function() {
   describe('toBuffer()/toString() methods', function() {
