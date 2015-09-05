@@ -1,7 +1,9 @@
-var ip = require('..'),
-    assert = require('assert'),
-    net = require('net'),
-    os = require('os');
+'use strict';
+
+var ip = require('..');
+var assert = require('assert');
+var net = require('net');
+var os = require('os');
 
 describe('IP library for node.js', function() {
   describe('toBuffer()/toString() methods', function() {
@@ -249,69 +251,69 @@ describe('IP library for node.js', function() {
     });
   });
 
-  describe('loopback() method', function () {
-    describe('undefined', function () {
-      it('should respond with 127.0.0.1', function () {
+  describe('loopback() method', function() {
+    describe('undefined', function() {
+      it('should respond with 127.0.0.1', function() {
         assert.equal(ip.loopback(), '127.0.0.1')
       });
     });
 
-    describe('ipv4', function () {
-      it('should respond with 127.0.0.1', function () {
+    describe('ipv4', function() {
+      it('should respond with 127.0.0.1', function() {
         assert.equal(ip.loopback('ipv4'), '127.0.0.1')
       });
     });
 
-    describe('ipv6', function () {
-      it('should respond with fe80::1', function () {
+    describe('ipv6', function() {
+      it('should respond with fe80::1', function() {
         assert.equal(ip.loopback('ipv6'), 'fe80::1')
       });
     });
   });
 
-  describe('isLoopback() method', function () {
-    describe('127.0.0.1', function () {
-      it('should respond with true', function () {
+  describe('isLoopback() method', function() {
+    describe('127.0.0.1', function() {
+      it('should respond with true', function() {
         assert.ok(ip.isLoopback('127.0.0.1'))
       });
     });
 
-    describe('8.8.8.8', function () {
-      it('should respond with false', function () {
+    describe('8.8.8.8', function() {
+      it('should respond with false', function() {
         assert.equal(ip.isLoopback('8.8.8.8'), false);
       });
     });
 
-    describe('fe80::1', function () {
-      it('should respond with true', function () {
+    describe('fe80::1', function() {
+      it('should respond with true', function() {
         assert.ok(ip.isLoopback('fe80::1'))
       });
     });
 
-    describe('::1', function () {
-      it('should respond with true', function () {
+    describe('::1', function() {
+      it('should respond with true', function() {
         assert.ok(ip.isLoopback('::1'))
       });
     });
 
-    describe('::', function () {
-      it('should respond with true', function () {
+    describe('::', function() {
+      it('should respond with true', function() {
         assert.ok(ip.isLoopback('::'))
       });
     });
   });
 
-  describe('address() method', function () {
-    describe('undefined', function () {
-      it('should respond with a private ip', function () {
+  describe('address() method', function() {
+    describe('undefined', function() {
+      it('should respond with a private ip', function() {
         assert.ok(ip.isPrivate(ip.address()));
       });
     });
 
-    describe('private', function () {
-      [undefined, 'ipv4', 'ipv6'].forEach(function (family) {
-        describe(family, function () {
-          it('should respond with a private ip', function () {
+    describe('private', function() {
+      [ undefined, 'ipv4', 'ipv6' ].forEach(function(family) {
+        describe(family, function() {
+          it('should respond with a private ip', function() {
             assert.ok(ip.isPrivate(ip.address('private', family)));
           });
         });
@@ -320,34 +322,36 @@ describe('IP library for node.js', function() {
 
     var interfaces = os.networkInterfaces();
 
-    Object.keys(interfaces).forEach(function (nic) {
-      describe(nic, function () {
-        [undefined, 'ipv4'].forEach(function (family) {
-          describe(family, function () {
-            it('should respond with an ipv4 address', function () {
-              assert.ok(net.isIPv4(ip.address(nic, family)));
+    Object.keys(interfaces).forEach(function(nic) {
+      describe(nic, function() {
+        [ undefined, 'ipv4' ].forEach(function(family) {
+          describe(family, function() {
+            it('should respond with an ipv4 address', function() {
+              var addr = ip.address(nic, family);
+              assert.ok(!addr || net.isIPv4(addr));
             });
           });
         });
 
-        describe('ipv6', function () {
-          it('should respond with an ipv6 address', function () {
-            assert.ok(net.isIPv6(ip.address(nic, 'ipv6')));
+        describe('ipv6', function() {
+          it('should respond with an ipv6 address', function() {
+            var addr = ip.address(nic, 'ipv6');
+            assert.ok(!addr || net.isIPv6(addr));
           });
         })
       });
     });
   });
 
-  describe('toLong() method', function(){
-    it('should respond with a int', function(){
+  describe('toLong() method', function() {
+    it('should respond with a int', function() {
       assert.equal(ip.toLong('127.0.0.1'), 2130706433);
       assert.equal(ip.toLong('255.255.255.255'), 4294967295);
     });
   });
 
-  describe('fromLong() method', function(){
-    it('should repond with ipv4 address', function(){
+  describe('fromLong() method', function() {
+    it('should repond with ipv4 address', function() {
       assert.equal(ip.fromLong(2130706433), '127.0.0.1');
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
     });
