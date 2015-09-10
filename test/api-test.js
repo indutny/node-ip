@@ -286,8 +286,14 @@ describe('IP library for node.js', function() {
       });
     });
 
-    describe('8.8.8.8', function() {
-      it('should respond with false', function() {
+    describe('127.8.8.8', function () {
+      it('should respond with true', function () {
+        assert.ok(ip.isLoopback('127.8.8.8'))
+      });
+    });
+
+    describe('8.8.8.8', function () {
+      it('should respond with false', function () {
         assert.equal(ip.isLoopback('8.8.8.8'), false);
       });
     });
