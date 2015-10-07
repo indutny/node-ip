@@ -1,6 +1,21 @@
-# IP
+# IP  
+[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)  
+
 IP address utilities for node.js
 
+## Installation
+
+###  npm
+```shell
+npm install ip
+```
+
+### git
+
+```shell
+git clone https://github.com/indutny/node-ip.git
+```
+  
 ## Usage
 Get your ip address, compare ip addresses, validate ip addresses, etc.
 
