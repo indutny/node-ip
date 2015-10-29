@@ -32,6 +32,8 @@ ip.cidr('192.168.1.134/26') // 192.168.1.128
 ip.not('255.255.255.0') // 0.0.0.255
 ip.or('192.168.1.134', '0.0.0.255') // 192.168.1.255
 ip.isPrivate('127.0.0.1') // true
+ip.isV4Format('127.0.0.1'); // true
+ip.isV6Format('::ffff:127.0.0.1'); // true
 
 // operate on buffers in-place
 var buf = new Buffer(128);
