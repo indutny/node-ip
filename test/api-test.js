@@ -325,6 +325,47 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('networkInterface() method', function() {
+    describe('undefined', function() {
+      it('should respond with a private ip', function() {
+        assert.ok(ip.isPrivate(ip.networkInterface().address));
+      });
+    });
+
+    describe('private', function() {
+      [ undefined, 'ipv4', 'ipv6' ].forEach(function(family) {
+        describe(family, function() {
+          it('should respond with a private ip', function() {
+            var addr = ip.networkInterface('private', family).address;
+            assert.ok(ip.isPrivate(addr));
+          });
+        });
+      });
+    });
+
+    var interfaces = os.networkInterfaces();
+
+    Object.keys(interfaces).forEach(function(nic) {
+      describe(nic, function() {
+        [ undefined, 'ipv4' ].forEach(function(family) {
+          describe(family, function() {
+            it('should respond with an ipv4 address', function() {
+              var ni = ip.networkInterface(nic, family);
+              assert.ok(!ni || net.isIPv4(ni.address));
+            });
+          });
+        });
+
+        describe('ipv6', function() {
+          it('should respond with an ipv6 address', function() {
+            var ni = ip.networkInterface(nic, 'ipv6');
+            assert.ok(!ni || net.isIPv6(ni.address));
+          });
+        })
+      });
+    });
+  });
+
   describe('address() method', function() {
     describe('undefined', function() {
       it('should respond with a private ip', function() {
