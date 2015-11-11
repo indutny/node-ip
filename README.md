@@ -1,5 +1,5 @@
-# IP  
-[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)  
+# IP
+[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)
 
 IP address utilities for node.js
 
@@ -15,13 +15,14 @@ npm install ip
 ```shell
 git clone https://github.com/indutny/node-ip.git
 ```
-  
+
 ## Usage
 Get your ip address, compare ip addresses, validate ip addresses, etc.
 
 ```js
 var ip = require('ip');
 
+ip.networkInterface() // my network interface
 ip.address() // my ip address
 ip.isEqual('::1', '::0:1'); // true
 ip.toBuffer('127.0.0.1') // Buffer([127, 0, 0, 1])
