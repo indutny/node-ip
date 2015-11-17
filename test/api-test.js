@@ -164,6 +164,42 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('subnet() method without arguments', function() {
+    var ipv4Subnet;
+    var networkInterface;
+
+    beforeEach(function() {
+      networkInterface = ip.networkInterface;
+      ip.networkInterface = function networkInterfaceStub() {
+        return {
+          address: '192.168.1.134',
+          mask: '255.255.255.192'
+        };
+      };
+      ipv4Subnet = ip.subnet();
+    });
+
+    afterEach(function() {
+      ipv4Subnet = null;
+      ip.networkInterface = networkInterface;
+    });
+
+    it('returns the subnet of the default network interface', function() {
+      console.log(ipv4Subnet);
+      assert.deepEqual(ipv4Subnet, {
+        networkAddress: '192.168.1.128',
+        firstAddress: '192.168.1.129',
+        lastAddress: '192.168.1.190',
+        broadcastAddress: '192.168.1.191',
+        numHosts: 62,
+        subnetMask: '255.255.255.192',
+        subnetMaskLength: 26,
+        length: 64
+      });
+    });
+
+  });
+
   describe('cidrSubnet() method', function() {
     // Test cases calculated with http://www.subnet-calculator.com/
     var ipv4Subnet = ip.cidrSubnet('192.168.1.134/26');
