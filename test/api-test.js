@@ -97,38 +97,17 @@ describe('IP library for node.js', function() {
 
   describe('subnet() method', function() {
     // Test cases calculated with http://www.subnet-calculator.com/
-    var ipv4Subnet = ip.subnet('192.168.1.134', '255.255.255.192');
-
-    it('should compute ipv4 network address', function() {
-      assert.equal(ipv4Subnet.networkAddress, '192.168.1.128');
-    });
-
-    it('should compute ipv4 network\'s first address', function() {
-      assert.equal(ipv4Subnet.firstAddress, '192.168.1.129');
-    });
-
-    it('should compute ipv4 network\'s last address', function() {
-      assert.equal(ipv4Subnet.lastAddress, '192.168.1.190');
-    });
-
-    it('should compute ipv4 broadcast address', function() {
-      assert.equal(ipv4Subnet.broadcastAddress, '192.168.1.191');
-    });
-
-    it('should compute ipv4 subnet number of addresses', function() {
-      assert.equal(ipv4Subnet.length, 64);
-    });
-
-    it('should compute ipv4 subnet number of addressable hosts', function() {
-      assert.equal(ipv4Subnet.numHosts, 62);
-    });
-
-    it('should compute ipv4 subnet mask', function() {
-      assert.equal(ipv4Subnet.subnetMask, '255.255.255.192');
-    });
-
-    it('should compute ipv4 subnet mask\'s length', function() {
-      assert.equal(ipv4Subnet.subnetMaskLength, 26);
+    it('computes ipv4 network', function() {
+      assert.deepEqual(ip.subnet('192.168.1.134', '255.255.255.192'), {
+        networkAddress: '192.168.1.128',
+        firstAddress: '192.168.1.129',
+        lastAddress: '192.168.1.190',
+        broadcastAddress: '192.168.1.191',
+        numHosts: 62,
+        subnetMask: '255.255.255.192',
+        subnetMaskLength: 26,
+        length: 64
+      });
     });
   });
 
@@ -176,17 +155,14 @@ describe('IP library for node.js', function() {
           mask: '255.255.255.192'
         };
       };
-      ipv4Subnet = ip.subnet();
     });
 
     afterEach(function() {
-      ipv4Subnet = null;
       ip.networkInterface = networkInterface;
     });
 
     it('returns the subnet of the default network interface', function() {
-      console.log(ipv4Subnet);
-      assert.deepEqual(ipv4Subnet, {
+      assert.deepEqual(ip.subnet(), {
         networkAddress: '192.168.1.128',
         firstAddress: '192.168.1.129',
         lastAddress: '192.168.1.190',
