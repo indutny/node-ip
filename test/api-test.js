@@ -152,7 +152,7 @@ describe('IP library for node.js', function() {
       ip.networkInterface = function networkInterfaceStub() {
         return {
           address: '192.168.1.134',
-          mask: '255.255.255.192'
+          netmask: '255.255.255.192'
         };
       };
     });
