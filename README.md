@@ -50,9 +50,14 @@ ip.subnet('192.168.1.134', '255.255.255.192')
 //   subnetMask: '255.255.255.192',
 //   subnetMaskLength: 26,
 //   numHosts: 62,
-//   length: 64 }
+//   length: 64,
+//   contains: function(addr){...} }
 ip.cidrSubnet('192.168.1.134/26')
 // Same as previous.
+
+// range checking
+ip.cidrSubnet('192.168.1.134/26').contains('192.168.1.190') // true
+
 
 // ipv4 long conversion
 ip.toLong('127.0.0.1'); // 2130706433
