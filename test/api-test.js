@@ -130,12 +130,12 @@ describe('IP library for node.js', function() {
     it('should compute ipv4 subnet mask\'s length', function() {
       assert.equal(ipv4Subnet.subnetMaskLength, 26);
     });
-    
-    it('should know whether a subnet contains an address', function(){
+
+    it('should know whether a subnet contains an address', function() {
       assert.equal(ipv4Subnet.contains('192.168.1.180'), true);
     });
 
-    it('should know whether a subnet does not contain an address', function(){
+    it('should know whether a subnet does not contain an address', function() {
       assert.equal(ipv4Subnet.contains('192.168.1.195'), false);
     });
   });
@@ -207,7 +207,7 @@ describe('IP library for node.js', function() {
     it('should compute an ipv4 subnet mask\'s length', function() {
       assert.equal(ipv4Subnet.subnetMaskLength, 26);
     });
-    
+
     it('should know whether a subnet contains an address', function() {
       assert.equal(ipv4Subnet.contains('192.168.1.180'), true);
     });
