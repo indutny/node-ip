@@ -14,7 +14,8 @@
     "mocha": "~1.3.2"
   },
   "scripts": {
-    "test": "jscs lib/*.js test/*.js && jshint lib/*.js && mocha --reporter spec test/*-test.js"
+    "test": "jscs lib/*.js test/*.js && jshint lib/*.js && mocha --reporter spec test/*-test.js",
+    "fix": "jscs lib/*.js test/*.js --fix"
   },
   "license": "MIT"
 }
