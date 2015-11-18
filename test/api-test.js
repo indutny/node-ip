@@ -104,11 +104,11 @@ describe('IP library for node.js', function() {
     });
 
     it('should compute ipv4 network\'s first address', function() {
-      assert.equal(ipv4Subnet.firstAddress, '192.168.1.129');
+      assert.equal(ipv4Subnet.firstAddress, '192.168.1.128');
     });
 
     it('should compute ipv4 network\'s last address', function() {
-      assert.equal(ipv4Subnet.lastAddress, '192.168.1.190');
+      assert.equal(ipv4Subnet.lastAddress, '192.168.1.191');
     });
 
     it('should compute ipv4 broadcast address', function() {
@@ -173,11 +173,11 @@ describe('IP library for node.js', function() {
     });
 
     it('should compute an ipv4 network\'s first address', function() {
-      assert.equal(ipv4Subnet.firstAddress, '192.168.1.129');
+      assert.equal(ipv4Subnet.firstAddress, '192.168.1.128');
     });
 
     it('should compute an ipv4 network\'s last address', function() {
-      assert.equal(ipv4Subnet.lastAddress, '192.168.1.190');
+      assert.equal(ipv4Subnet.lastAddress, '192.168.1.191');
     });
 
     it('should compute an ipv4 broadcast address', function() {
