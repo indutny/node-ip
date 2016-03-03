@@ -270,6 +270,7 @@ describe('IP library for node.js', function() {
     });
 
     it('should check if an address is from a private IPv6 network', function() {
+      assert.equal(ip.isPrivate('fd12:3456:789a:1::1'), true);
       assert.equal(ip.isPrivate('fe80::f2de:f1ff:fe3f:307e'), true);
       assert.equal(ip.isPrivate('::ffff:10.100.1.42'), true);
       assert.equal(ip.isPrivate('::FFFF:172.16.200.1'), true);
