@@ -399,4 +399,15 @@ describe('IP library for node.js', function() {
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
     });
   })
+
+  describe('range() method', function() {
+    it('should repond with array of ipv4 addresses', function() {
+      var range_array = ip.range('192.168.0.0', '192.168.1.255');
+      assert.equal(range_array.length, 512);
+      assert.equal(range_array[0], '192.168.0.0');
+      assert.equal(range_array[1], '192.168.0.1');
+      assert.equal(range_array[510], '192.168.1.254');
+      assert.equal(range_array[511], '192.168.1.255');
+    });
+  })
 });
