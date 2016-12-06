@@ -22,6 +22,7 @@ Get your ip address, compare ip addresses, validate ip addresses, etc.
 ```js
 var ip = require('ip');
 
+ip.isValid('192.168.1.134') // true
 ip.address() // my ip address
 ip.isEqual('::1', '::0:1'); // true
 ip.toBuffer('127.0.0.1') // Buffer([127, 0, 0, 1])
