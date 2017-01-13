@@ -239,6 +239,7 @@ describe('IP library for node.js', function() {
 
   describe('isPrivate() method', function() {
     it('should check if an address is localhost', function() {
+      assert.equal(ip.isPrivate('0.0.0.0'), true);
       assert.equal(ip.isPrivate('127.0.0.1'), true);
     });
 
@@ -342,6 +343,12 @@ describe('IP library for node.js', function() {
     describe('::', function() {
       it('should respond with true', function() {
         assert.ok(ip.isLoopback('::'))
+      });
+    });
+
+    describe('0.0.0.0', function() {
+      it('should respond with true', function() {
+        assert.ok(ip.isLoopback('0.0.0.0'))
       });
     });
   });
