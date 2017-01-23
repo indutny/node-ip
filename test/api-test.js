@@ -36,9 +36,9 @@ describe('IP library for node.js', function() {
       assert(/(00){15,15}01/.test(buf.toString('hex', offset, offset + 16)));
       assert.equal(ip.toString(buf, offset, 16), '::1');
       assert.equal(ip.toString(ip.toBuffer('1::', buf, offset),
-                               offset, 16), '1::');
+        offset, 16), '1::');
       assert.equal(ip.toString(ip.toBuffer('abcd::dcba', buf, offset),
-                               offset, 16), 'abcd::dcba');
+        offset, 16), 'abcd::dcba');
     });
 
     it('should convert to buffer IPv6 mapped IPv4 address', function() {
@@ -80,11 +80,11 @@ describe('IP library for node.js', function() {
     });
     it('should or bits in ipv6 addresses', function() {
       assert.equal(ip.or('::ff', '::abcd:dcba:abcd:dcba'),
-                   '::abcd:dcba:abcd:dcff');
+        '::abcd:dcba:abcd:dcff');
     });
     it('should or bits in mixed addresses', function() {
       assert.equal(ip.or('0.0.0.255', '::abcd:dcba:abcd:dcba'),
-                   '::abcd:dcba:abcd:dcff');
+        '::abcd:dcba:abcd:dcff');
     });
   });
 
@@ -315,14 +315,14 @@ describe('IP library for node.js', function() {
       });
     });
 
-    describe('127.8.8.8', function () {
-      it('should respond with true', function () {
+    describe('127.8.8.8', function() {
+      it('should respond with true', function() {
         assert.ok(ip.isLoopback('127.8.8.8'))
       });
     });
 
-    describe('8.8.8.8', function () {
-      it('should respond with false', function () {
+    describe('8.8.8.8', function() {
+      it('should respond with false', function() {
         assert.equal(ip.isLoopback('8.8.8.8'), false);
       });
     });
@@ -359,6 +359,13 @@ describe('IP library for node.js', function() {
           it('should respond with a private ip', function() {
             assert.ok(ip.isPrivate(ip.address('private', family)));
           });
+          it('should respond with a private ip addresses', function() {
+            var addresses = ip.address('private', family, true);
+            assert.ok(Array.isArray(addresses));
+            addresses.forEach(function(a) {
+              assert.ok(ip.isPrivate(a));
+            });
+          });
         });
       });
     });
@@ -373,6 +380,14 @@ describe('IP library for node.js', function() {
               var addr = ip.address(nic, family);
               assert.ok(!addr || net.isIPv4(addr));
             });
+
+            it('should respond with multiple ipv4 addresses', function() {
+              var addresses = ip.address(nic, family, true);
+              assert.ok(Array.isArray(addresses));
+              assert.ok(addresses.length === 0 || addresses.every(function(a) {
+                return net.isIPv4(a);
+              }));
+            });
           });
         });
 
@@ -380,6 +395,14 @@ describe('IP library for node.js', function() {
           it('should respond with an ipv6 address', function() {
             var addr = ip.address(nic, 'ipv6');
             assert.ok(!addr || net.isIPv6(addr));
+          });
+
+          it('should respond with multiple ipv6 addresses', function() {
+            var addresses = ip.address(nic, 'ipv6', true);
+            assert.ok(Array.isArray(addresses));
+            assert.ok(addresses.length === 0 || addresses.every(function(a) {
+              return net.isIPv6(a);
+            }));
           });
         })
       });
