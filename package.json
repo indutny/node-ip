@@ -8,6 +8,7 @@
     "url": "http://github.com/indutny/node-ip.git"
   },
   "main": "lib/ip",
+  "description": "IP address utilities for node.js",
   "devDependencies": {
     "jscs": "^2.1.1",
     "jshint": "^2.8.0",
