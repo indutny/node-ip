@@ -93,6 +93,11 @@ describe('IP library for node.js', function() {
       assert.equal(ip.mask('192.168.1.134', '255.255.255.0'), '192.168.1.0');
       assert.equal(ip.mask('192.168.1.134', '::ffff:ff00'), '::ffff:c0a8:100');
     });
+
+    it('should not leak data', function() {
+      for (var i = 0; i < 10; i++)
+        assert.equal(ip.mask('::1', '0.0.0.0'), '::');
+    });
   });
 
   describe('subnet() method', function() {
