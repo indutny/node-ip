@@ -296,19 +296,19 @@ describe('IP library for node.js', function() {
   describe('loopback() method', function() {
     describe('undefined', function() {
       it('should respond with 127.0.0.1', function() {
-        assert.equal(ip.loopback(), '127.0.0.1')
+        assert.equal(ip.loopback(), '127.0.0.1');
       });
     });
 
     describe('ipv4', function() {
       it('should respond with 127.0.0.1', function() {
-        assert.equal(ip.loopback('ipv4'), '127.0.0.1')
+        assert.equal(ip.loopback('ipv4'), '127.0.0.1');
       });
     });
 
     describe('ipv6', function() {
       it('should respond with fe80::1', function() {
-        assert.equal(ip.loopback('ipv6'), 'fe80::1')
+        assert.equal(ip.loopback('ipv6'), 'fe80::1');
       });
     });
   });
@@ -316,13 +316,13 @@ describe('IP library for node.js', function() {
   describe('isLoopback() method', function() {
     describe('127.0.0.1', function() {
       it('should respond with true', function() {
-        assert.ok(ip.isLoopback('127.0.0.1'))
+        assert.ok(ip.isLoopback('127.0.0.1'));
       });
     });
 
     describe('127.8.8.8', function () {
       it('should respond with true', function () {
-        assert.ok(ip.isLoopback('127.8.8.8'))
+        assert.ok(ip.isLoopback('127.8.8.8'));
       });
     });
 
@@ -334,19 +334,19 @@ describe('IP library for node.js', function() {
 
     describe('fe80::1', function() {
       it('should respond with true', function() {
-        assert.ok(ip.isLoopback('fe80::1'))
+        assert.ok(ip.isLoopback('fe80::1'));
       });
     });
 
     describe('::1', function() {
       it('should respond with true', function() {
-        assert.ok(ip.isLoopback('::1'))
+        assert.ok(ip.isLoopback('::1'));
       });
     });
 
     describe('::', function() {
       it('should respond with true', function() {
-        assert.ok(ip.isLoopback('::'))
+        assert.ok(ip.isLoopback('::'));
       });
     });
   });
@@ -386,7 +386,7 @@ describe('IP library for node.js', function() {
             var addr = ip.address(nic, 'ipv6');
             assert.ok(!addr || net.isIPv6(addr));
           });
-        })
+        });
       });
     });
   });
@@ -403,5 +403,24 @@ describe('IP library for node.js', function() {
       assert.equal(ip.fromLong(2130706433), '127.0.0.1');
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
     });
-  })
+  });
+
+  describe('isValid() method', function() {
+    it('should respond with valid', function() {
+      assert.equal(ip.isValid('127.0.0.1'), true);
+      assert.equal(ip.isValid('8.8.8.8'), true);
+      assert.equal(ip.isValid('0::24.24.24.24'), true);
+      assert.equal(ip.isValid('2607:f8b0:4005:804::200e'), true);
+    });
+
+    it('should respond with invalid', function() {
+      assert.equal(ip.isValid('google.com'), false);
+      assert.equal(ip.isValid(''), false);
+      assert.equal(ip.isValid(null), false);
+      assert.equal(ip.isValid([]), false);
+      assert.equal(ip.isValid({}), false);
+      assert.equal(ip.isValid(true), false);
+      assert.equal(ip.isValid(false), false);
+    });
+  });
 });
