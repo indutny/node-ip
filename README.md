@@ -1,5 +1,5 @@
-# IP  
-[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)  
+# IP
+[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)
 
 IP address utilities for node.js
 
@@ -15,7 +15,7 @@ npm install ip
 ```shell
 git clone https://github.com/indutny/node-ip.git
 ```
-  
+
 ## Usage
 Get your ip address, compare ip addresses, validate ip addresses, etc.
 
@@ -44,8 +44,8 @@ ip.toString(buf, offset, 4);            // '127.0.0.1'
 // subnet information
 ip.subnet('192.168.1.134', '255.255.255.192')
 // { networkAddress: '192.168.1.128',
-//   firstAddress: '192.168.1.129',
-//   lastAddress: '192.168.1.190',
+//   firstAddress: '192.168.1.128',
+//   lastAddress: '192.168.1.191',
 //   broadcastAddress: '192.168.1.191',
 //   subnetMask: '255.255.255.192',
 //   subnetMaskLength: 26,
