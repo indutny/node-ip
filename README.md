@@ -62,6 +62,10 @@ ip.cidrSubnet('192.168.1.134/26').contains('192.168.1.190') // true
 // ipv4 long conversion
 ip.toLong('127.0.0.1'); // 2130706433
 ip.fromLong(2130706433); // '127.0.0.1'
+
+// reverse dns
+ip.toReverseDNS('127.0.0.1') // '1.0.0.127.in-addr.arpa'
+ip.toReverseDNS('2001:db8::567:89ab') //'b.a.9.8.7.6.5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa'
 ```
 
 ### License
