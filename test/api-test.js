@@ -358,6 +358,12 @@ describe('IP library for node.js', function() {
       });
     });
 
+    describe('not found', function() {
+      it('should respond with a undefined', function() {
+        assert.equal(ip.address('not found'), undefined);
+      });
+    });
+
     describe('private', function() {
       [ undefined, 'ipv4', 'ipv6' ].forEach(function(family) {
         describe(family, function() {
