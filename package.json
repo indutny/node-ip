@@ -1,11 +1,11 @@
 {
   "name": "ip",
-  "version": "1.1.5",
-  "author": "Fedor Indutny <fedor@indutny.com>",
-  "homepage": "https://github.com/indutny/node-ip",
+  "version": "1.0.0",
+  "author": "Kivi s_f_dragon@163.com",
+  "homepage": "https://github.com/CocaCola183/node-ip",
   "repository": {
     "type": "git",
-    "url": "http://github.com/indutny/node-ip.git"
+    "url": "https://github.com/CocaCola183/node-ip"
   },
   "main": "lib/ip",
   "devDependencies": {
