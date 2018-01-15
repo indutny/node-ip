@@ -177,6 +177,51 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('range() method', function() {
+    var ipv4RangeShort = ip.range('192.168.0.100-249');
+    var ipv4RangeLong = ip.range('192.168.0.100-192.168.1.100');
+
+    it('should compute an ipv4 range\'s first address', function() {
+      assert.equal(ipv4RangeShort.firstAddress, '192.168.0.100');
+    });
+
+    it('should compute an ipv4 range\'s last address', function() {
+      assert.equal(ipv4RangeShort.lastAddress, '192.168.0.249');
+    });
+
+    it('should compute an ipv4 range number of addresses', function() {
+      assert.equal(ipv4RangeShort.length, 149);
+    });
+
+    it('should know whether a subnet contains an address', function() {
+      assert.equal(ipv4RangeShort.contains('192.168.0.180'), true);
+    });
+
+    it('should know whether a subnet contains an address', function() {
+      assert.equal(ipv4RangeShort.contains('192.168.0.255'), false);
+    });
+
+    it('should compute an ipv4 range\'s first address', function() {
+      assert.equal(ipv4RangeLong.firstAddress, '192.168.0.100');
+    });
+
+    it('should compute an ipv4 range\'s last address', function() {
+      assert.equal(ipv4RangeLong.lastAddress, '192.168.1.100');
+    });
+
+    it('should compute an ipv4 range number of addresses', function() {
+      assert.equal(ipv4RangeLong.length, 256);
+    });
+
+    it('should know whether a subnet contains an address', function() {
+      assert.equal(ipv4RangeLong.contains('192.168.0.180'), true);
+    });
+
+    it('should know whether a subnet contains an address', function() {
+      assert.equal(ipv4RangeLong.contains('192.168.1.255'), false);
+    });
+  });
+
   describe('cidrSubnet() method', function() {
     // Test cases calculated with http://www.subnet-calculator.com/
     var ipv4Subnet = ip.cidrSubnet('192.168.1.134/26');
