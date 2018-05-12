@@ -360,7 +360,7 @@ describe('IP library for node.js', function() {
 
     describe('private', function() {
       [ undefined, 'ipv4', 'ipv6' ].forEach(function(family) {
-        describe(family, function() {
+        describe(family || 'undefined', function() {
           it('should respond with a private ip', function() {
             assert.ok(ip.isPrivate(ip.address('private', family)));
           });
@@ -373,7 +373,7 @@ describe('IP library for node.js', function() {
     Object.keys(interfaces).forEach(function(nic) {
       describe(nic, function() {
         [ undefined, 'ipv4' ].forEach(function(family) {
-          describe(family, function() {
+          describe(family || 'undefined', function() {
             it('should respond with an ipv4 address', function() {
               var addr = ip.address(nic, family);
               assert.ok(!addr || net.isIPv4(addr));
