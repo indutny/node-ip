@@ -22,8 +22,22 @@ Get your ip address, compare ip addresses, validate ip addresses, etc.
 ```js
 var ip = require('ip');
 
+/**
+ *  @param {string} name **Optional** {'public'|'private'},
+ *   Name or security of the network interface like "Docket" | "Wi-Fi",
+ *   if neme set `undefined` return first address of the interface with `ipv4` or loopback address,
+ *   if name set `public` return first public ip address,
+ *   or if name set `private` return first public ip address.
+ *  @param   {string} family **Optional** {ipv4|ipv6}  IP family of the address (defaults: ipv4).
+ *  @returns {string} Returns the address for the network interface on the current system.
+ */
 ip.address() // my ip address
-ip.isEqual('::1', '::0:1'); // true
+ip.address('Wi-Fi') // Obtain Wi-Fi IPV4 address
+ip.address('vEthernet (DockerNAT)') // Obtain DocketNAt IPV4 address
+ip.address('private') // Obtain private IPV4 address
+ip.address('public','ipv6') // Obtain public IPV6 address
+
+ip.isEqual('::1', '::0:1') // true
 ip.toBuffer('127.0.0.1') // Buffer([127, 0, 0, 1])
 ip.toString(new Buffer([127, 0, 0, 1])) // 127.0.0.1
 ip.fromPrefixLen(24) // 255.255.255.0
@@ -33,7 +47,7 @@ ip.not('255.255.255.0') // 0.0.0.255
 ip.or('192.168.1.134', '0.0.0.255') // 192.168.1.255
 ip.isPrivate('127.0.0.1') // true
 ip.isV4Format('127.0.0.1'); // true
-ip.isV6Format('::ffff:127.0.0.1'); // true
+ip.isV6Format('::ffff:127.0.0.1') // true
 
 // operate on buffers in-place
 var buf = new Buffer(128);
@@ -60,8 +74,8 @@ ip.cidrSubnet('192.168.1.134/26').contains('192.168.1.190') // true
 
 
 // ipv4 long conversion
-ip.toLong('127.0.0.1'); // 2130706433
-ip.fromLong(2130706433); // '127.0.0.1'
+ip.toLong('127.0.0.1') // 2130706433
+ip.fromLong(2130706433) // '127.0.0.1'
 ```
 
 ### License
