@@ -1,5 +1,6 @@
 # IP  
 [![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)  
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
 
 IP address utilities for node.js
 
@@ -77,7 +78,7 @@ ip.cidrSubnet('192.168.1.134/26').contains('192.168.1.190') // true
 ip.toLong('127.0.0.1') // 2130706433
 ip.fromLong(2130706433) // '127.0.0.1'
 ```
-
+[![js-standard-style](https://cdn.rawgit.com/standard/standard/master/badge.svg)](http://standardjs.com)
 ### License
 
 This software is licensed under the MIT License.
