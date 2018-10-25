@@ -1,6 +1,6 @@
 # IP  
-[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)  
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
+[![](https://badge.fury.io/js/ip.svg)](https://www.npmjs.com/package/ip)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
+
 
 IP address utilities for node.js
 
