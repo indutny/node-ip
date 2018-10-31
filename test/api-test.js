@@ -396,6 +396,11 @@ describe('IP library for node.js', function() {
       assert.equal(ip.toLong('127.0.0.1'), 2130706433);
       assert.equal(ip.toLong('255.255.255.255'), 4294967295);
     });
+    it('should be able handle bad input', function() {
+      assert.equal(ip.toLong('fd12:3456:789a:1::1'), 0);
+      assert.equal(ip.toLong(null), 0);
+      assert.equal(ip.toLong(undefined), 0);
+    });
   });
 
   describe('fromLong() method', function() {
