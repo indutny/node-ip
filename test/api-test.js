@@ -386,7 +386,7 @@ describe('IP library for node.js', function() {
             var addr = ip.address(nic, 'ipv6');
             assert.ok(!addr || net.isIPv6(addr));
           });
-        })
+        });
       });
     });
   });
@@ -395,6 +395,17 @@ describe('IP library for node.js', function() {
     it('should respond with a int', function() {
       assert.equal(ip.toLong('127.0.0.1'), 2130706433);
       assert.equal(ip.toLong('255.255.255.255'), 4294967295);
+    });
+    it('should be able handle bad input', function() {
+      assert.throws(function () {
+        ip.toLong('fd12:3456:789a:1::1');
+      }, Error);
+      assert.throws(function () {
+        ip.toLong(null);
+      }, Error);
+      assert.throws(function () {
+        ip.toLong(undefined);
+      }, Error);
     });
   });
 
