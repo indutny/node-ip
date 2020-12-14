@@ -293,6 +293,16 @@ describe('IP library for node.js', function() {
     });
   });
 
+  describe('isShared() method', function() {
+    it('should check if an address is in the shared address space', function() {
+      assert.equal(ip.isShared('100.64.0.1'), true);
+    });
+
+    it('should not detect 100.* as the shared address space', function() {
+      assert.equal(ip.isShared('100.6.0.1'), false);
+    });
+  });
+
   describe('loopback() method', function() {
     describe('undefined', function() {
       it('should respond with 127.0.0.1', function() {
