@@ -7,6 +7,10 @@
     "type": "git",
     "url": "http://github.com/indutny/node-ip.git"
   },
+  "files": [
+    "lib",
+    "README.md"
+  ],
   "main": "lib/ip",
   "devDependencies": {
     "eslint": "^8.15.0",
