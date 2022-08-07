@@ -413,4 +413,27 @@ describe('IP library for node.js', () => {
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
     });
   });
+
+  describe('range() method', function() {
+    it('should respond with array of ipv4 addresses', () => {
+      let range_array = ip.range('192.168.0.0', '192.168.1.255');
+      assert.equal(range_array.length, 512);
+      assert.equal(range_array[0], '192.168.0.0');
+      assert.equal(range_array[1], '192.168.0.1');
+      assert.equal(range_array[510], '192.168.1.254');
+      assert.equal(range_array[511], '192.168.1.255');
+    });
+  });
+
+  describe('range() method', function() {
+    it('should respond with array of ipv6 addresses', () => {
+      let range_array = ip.range('2000::fffe', '2000::1:2');
+      assert.equal(range_array.length, 5);
+      assert.equal(range_array[0], '2000::fffe');
+      assert.equal(range_array[1], '2000::ffff');
+      assert.equal(range_array[2], '2000::1:0');
+      assert.equal(range_array[3], '2000::1:1');
+      assert.equal(range_array[4], '2000::1:2');
+    });
+  });
 });
