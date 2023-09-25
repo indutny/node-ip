@@ -14,7 +14,10 @@
   "main": "lib/ip",
   "devDependencies": {
     "eslint": "^8.15.0",
-    "mocha": "^10.0.0"
+    "mocha": "^10.2.0"
+  },
+  "engines": {
+    "node": ">=16.0"
   },
   "scripts": {
     "lint": "eslint lib/*.js test/*.js",

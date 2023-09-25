@@ -1,9 +1,9 @@
 /* global describe, it */
-const assert = require('assert');
-const { Buffer } = require('buffer');
-const net = require('net');
-const os = require('os');
-const ip = require('..');
+import assert from 'assert';
+import { Buffer } from 'buffer';
+import net from 'net';
+import os from 'os';
+import * as ip from '../lib/ip.js';
 
 describe('IP library for node.js', () => {
   describe('toBuffer()/toString() methods', () => {
@@ -14,7 +14,7 @@ describe('IP library for node.js', () => {
     });
 
     it('should convert to buffer IPv4 address in-place', () => {
-      const buf = new Buffer(128);
+      const buf = Buffer.alloc(128);
       const offset = 64;
       ip.toBuffer('127.0.0.1', buf, offset);
       assert.equal(buf.toString('hex', offset, offset + 4), '7f000001');
@@ -22,7 +22,7 @@ describe('IP library for node.js', () => {
     });
 
     it('should convert to buffer IPv6 address', () => {
-      const buf = ip.toBuffer('::1');
+      const buf = Buffer.from(ip.toBuffer('::1'));
       assert(/(00){15,15}01/.test(buf.toString('hex')));
       assert.equal(ip.toString(buf), '::1');
       assert.equal(ip.toString(ip.toBuffer('1::')), '1::');
@@ -48,15 +48,15 @@ describe('IP library for node.js', () => {
     });
 
     it('should convert to buffer IPv6 mapped IPv4 address', () => {
-      let buf = ip.toBuffer('::ffff:127.0.0.1');
+      let buf = Buffer.from(ip.toBuffer('::ffff:127.0.0.1'));
       assert.equal(buf.toString('hex'), '00000000000000000000ffff7f000001');
       assert.equal(ip.toString(buf), '::ffff:7f00:1');
 
-      buf = ip.toBuffer('ffff::127.0.0.1');
+      buf = Buffer.from(ip.toBuffer('ffff::127.0.0.1'));
       assert.equal(buf.toString('hex'), 'ffff000000000000000000007f000001');
       assert.equal(ip.toString(buf), 'ffff::7f00:1');
 
-      buf = ip.toBuffer('0:0:0:0:0:ffff:127.0.0.1');
+      buf = Buffer.from(ip.toBuffer('0:0:0:0:0:ffff:127.0.0.1'));
       assert.equal(buf.toString('hex'), '00000000000000000000ffff7f000001');
       assert.equal(ip.toString(buf), '::ffff:7f00:1');
     });
