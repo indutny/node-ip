@@ -300,6 +300,10 @@ describe('IP library for node.js', () => {
       assert.equal(ip.isPrivate('::1'), true);
       assert.equal(ip.isPrivate('fe80::1'), true);
     });
+
+    it('should correctly identify hexadecimal IP addresses like \'0x7f.1\' as private', () => {
+      assert.equal(ip.isPrivate('0x7f.1'), true);
+    });
   });
 
   describe('loopback() method', () => {
