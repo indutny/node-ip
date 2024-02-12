@@ -254,7 +254,24 @@ describe('IP library for node.js', () => {
   describe('isPrivate() method', () => {
     it('should check if an address is localhost', () => {
       assert.equal(ip.isPrivate('127.0.0.1'), true);
+      assert.equal(ip.isPrivate('127.0.1.1'), true);
+      assert.equal(ip.isPrivate('127.1.1.1'), true);
     });
+
+    it('should check if an address is localhost in short notation', () => {
+      // assert.equal(ip.isPrivate('127.1'), true);
+      assert.equal(ip.isPrivate('127.1.1'), true);
+      assert.equal(ip.isPrivate('127.1.1.1'), true);
+    });
+    
+    it('should check if an address is localhost in hexadecimal notation', () => {
+      assert.equal(ip.isPrivate('0x7f000002'), true);
+      assert.equal(ip.isPrivate('0x7f010101'), true);
+    })
+
+    it('should check if an address is localhost in short hexadecimal notation', () => {
+      assert.equal(ip.isPrivate('0x7f.1'), true);
+    })
 
     it('should check if an address is from a 192.168.x.x network', () => {
       assert.equal(ip.isPrivate('192.168.0.123'), true);
