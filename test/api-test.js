@@ -251,6 +251,57 @@ describe('IP library for node.js', () => {
     });
   });
 
+  describe('normalizeIpv4() method', () => {
+    // Testing valid inputs with different notations
+    it('should correctly normalize "127.0.0.1"', () => {
+      assert.equal(ip.normalizeToLong('127.0.0.1'), 2130706433);
+    });
+
+    it('should correctly handle "127.1" as two parts', () => {
+      assert.equal(ip.normalizeToLong('127.1'), 2130706433);
+    });
+
+    it('should correctly handle "127.0.1" as three parts', () => {
+      assert.equal(ip.normalizeToLong('127.0.1'), 2130706433);
+    });
+
+
+    it('should correctly handle hexadecimal notation "0x7f.0x0.0x0.0x1"', () => {
+      assert.equal(ip.normalizeToLong('0x7f.0x0.0x0.0x1'), 2130706433);
+    });
+
+    // Testing with fewer than 4 parts
+    it('should correctly handle "0x7f000001" as a single part', () => {
+      assert.equal(ip.normalizeToLong('0x7f000001'), 2130706433);
+    });
+
+    it('should correctly handle octal notation "010.0.0.01"', () => {
+      assert.equal(ip.normalizeToLong('010.0.0.01'), 134217729);
+    });
+
+    // Testing invalid inputs
+    it('should return -1 for an invalid address "256.100.50.25"', () => {
+      assert.equal(ip.normalizeToLong('256.100.50.25'), -1);
+    });
+
+    it('should return -1 for an address with invalid octal "019.0.0.1"', () => {
+      assert.equal(ip.normalizeToLong('019.0.0.1'), -1);
+    });
+
+    it('should return -1 for an address with invalid hex "0xGG.0.0.1"', () => {
+      assert.equal(ip.normalizeToLong('0xGG.0.0.1'), -1);
+    });
+
+    // Testing edge cases
+    it('should return -1 for an empty string', () => {
+      assert.equal(ip.normalizeToLong(''), -1);
+    });
+
+    it('should return -1 for a string with too many parts "192.168.0.1.100"', () => {
+      assert.equal(ip.normalizeToLong('192.168.0.1.100'), -1);
+    });
+  });
+
   describe('isPrivate() method', () => {
     it('should check if an address is localhost', () => {
       assert.equal(ip.isPrivate('127.0.0.1'), true);
@@ -299,6 +350,10 @@ describe('IP library for node.js', () => {
       assert.equal(ip.isPrivate('::'), true);
       assert.equal(ip.isPrivate('::1'), true);
       assert.equal(ip.isPrivate('fe80::1'), true);
+    });
+
+    it('should correctly identify hexadecimal IP addresses like \'0x7f.1\' as private', () => {
+      assert.equal(ip.isPrivate('0x7f.1'), true);
     });
   });
 
@@ -412,5 +467,43 @@ describe('IP library for node.js', () => {
       assert.equal(ip.fromLong(2130706433), '127.0.0.1');
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
     });
+  });
+
+  // IPv4 loopback in octal notation
+  it('should return true for octal representation "0177.0.0.1"', () => {
+    assert.equal(ip.isLoopback('0177.0.0.1'), true);
+  });
+
+  it('should return true for octal representation "0177.0.1"', () => {
+    assert.equal(ip.isLoopback('0177.0.1'), true);
+  });
+
+  it('should return true for octal representation "0177.1"', () => {
+    assert.equal(ip.isLoopback('0177.1'), true);
+  });
+
+  // IPv4 loopback in hexadecimal notation
+  it('should return true for hexadecimal representation "0x7f.0.0.1"', () => {
+    assert.equal(ip.isLoopback('0x7f.0.0.1'), true);
+  });
+
+  // IPv4 loopback in hexadecimal notation
+  it('should return true for hexadecimal representation "0x7f.0.1"', () => {
+    assert.equal(ip.isLoopback('0x7f.0.1'), true);
+  });
+
+  // IPv4 loopback in hexadecimal notation
+  it('should return true for hexadecimal representation "0x7f.1"', () => {
+    assert.equal(ip.isLoopback('0x7f.1'), true);
+  });
+
+  // IPv4 loopback as a single long integer
+  it('should return true for single long integer representation "2130706433"', () => {
+    assert.equal(ip.isLoopback('2130706433'), true);
+  });
+
+  // IPv4 non-loopback address
+  it('should return false for "192.168.1.1"', () => {
+    assert.equal(ip.isLoopback('192.168.1.1'), false);
   });
 });
