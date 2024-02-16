@@ -252,11 +252,6 @@ describe('IP library for node.js', () => {
   });
 
   describe('isPrivate() method', () => {
-    it('should check normalization if IPv4 addresses', () => {
-      let test = '0177.0.0.1';
-      let addr = ip.fromLong(ip.toLong(test));
-      console.log(`Converted Address eq: ${addr}`);
-    });
 
     it('should check if an address is localhost', () => {
       assert.equal(ip.isPrivate('127.0.0.1'), true);
