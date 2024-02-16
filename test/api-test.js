@@ -252,14 +252,25 @@ describe('IP library for node.js', () => {
   });
 
   describe('isPrivate() method', () => {
+    it('should check normalization if IPv4 addresses', () => {
+      let test = '0177.0.0.1';
+      let addr = ip.fromLong(ip.toLong(test));
+      console.log(`Converted Address eq: ${addr}`);
+    });
+
     it('should check if an address is localhost', () => {
       assert.equal(ip.isPrivate('127.0.0.1'), true);
+      assert.equal(ip.isPrivate('0x7f.0.0.1'), true);
+      assert.equal(ip.isPrivate('0177.0.0.1'), true);
     });
 
     it('should check if an address is from a 192.168.x.x network', () => {
       assert.equal(ip.isPrivate('192.168.0.123'), true);
       assert.equal(ip.isPrivate('192.168.122.123'), true);
       assert.equal(ip.isPrivate('192.162.1.2'), false);
+      assert.equal(ip.isPrivate('0300.0250.122.123'), true);
+      assert.equal(ip.isPrivate('0xC0.0xA8.122.123'), true);
+      assert.equal(ip.isPrivate('0300.162.1.2'), false);
     });
 
     it('should check if an address is from a 172.16.x.x network', () => {
@@ -267,6 +278,8 @@ describe('IP library for node.js', () => {
       assert.equal(ip.isPrivate('172.16.123.254'), true);
       assert.equal(ip.isPrivate('171.16.0.5'), false);
       assert.equal(ip.isPrivate('172.25.232.15'), true);
+      assert.equal(ip.isPrivate('0254.020.122.123'), true);
+      assert.equal(ip.isPrivate('0xAC.0x10.122.123'), true);
       assert.equal(ip.isPrivate('172.15.0.5'), false);
       assert.equal(ip.isPrivate('172.32.0.5'), false);
     });
@@ -274,12 +287,16 @@ describe('IP library for node.js', () => {
     it('should check if an address is from a 169.254.x.x network', () => {
       assert.equal(ip.isPrivate('169.254.2.3'), true);
       assert.equal(ip.isPrivate('169.254.221.9'), true);
-      assert.equal(ip.isPrivate('168.254.2.3'), false);
+      assert.equal(ip.isPrivate('169.254.2.3'), true);
+      assert.equal(ip.isPrivate('0251.0376.221.9'), true);
+      assert.equal(ip.isPrivate('0xA9.0xFE.2.3'), true);
     });
 
     it('should check if an address is from a 10.x.x.x network', () => {
       assert.equal(ip.isPrivate('10.0.2.3'), true);
       assert.equal(ip.isPrivate('10.1.23.45'), true);
+      assert.equal(ip.isPrivate('012.0.2.3'), true);
+      assert.equal(ip.isPrivate('0xA.1.23.45'), true);
       assert.equal(ip.isPrivate('12.1.2.3'), false);
     });
 
@@ -332,12 +349,16 @@ describe('IP library for node.js', () => {
     describe('127.8.8.8', () => {
       it('should respond with true', () => {
         assert.ok(ip.isLoopback('127.8.8.8'));
+        assert.ok(ip.isLoopback('0177.8.8.8'));
+        assert.ok(ip.isLoopback('0x7f.8.8.8'));
       });
     });
 
     describe('8.8.8.8', () => {
       it('should respond with false', () => {
         assert.equal(ip.isLoopback('8.8.8.8'), false);
+        assert.equal(ip.isLoopback('0x8.8.8.8'), false);
+        assert.equal(ip.isLoopback('010.8.8.8'), false);
       });
     });
 
@@ -403,14 +424,49 @@ describe('IP library for node.js', () => {
   describe('toLong() method', () => {
     it('should respond with a int', () => {
       assert.equal(ip.toLong('127.0.0.1'), 2130706433);
+      assert.equal(ip.toLong('0177.0.0.1'), 2130706433);
+      assert.equal(ip.toLong('0x7f.0.0.1'), 2130706433);
+      assert.equal(ip.toLong('127.0x00.0.1'), 2130706433);
       assert.equal(ip.toLong('255.255.255.255'), 4294967295);
+      assert.equal(ip.toLong('0xff.0xff.0xff.0xff'), 4294967295);
+      assert.equal(ip.toLong('0377.0377.0377.0377'), 4294967295);
+      assert.equal(ip.toLong('255.0xff.0377.0377'), 4294967295);
     });
   });
 
   describe('fromLong() method', () => {
-    it('should repond with ipv4 address', () => {
+    it('should respond with ipv4 address', () => {
       assert.equal(ip.fromLong(2130706433), '127.0.0.1');
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
+    });
+  });
+
+  describe('normalizeIpv4Address() method', () => {
+    it('should response with ipv4 address with decimal octets', () => {
+      assert.equal(ip.normalizeIpv4Address('127.0.0.1'), '127.0.0.1');
+      assert.equal(ip.normalizeIpv4Address('0x7f.0x0.0x0.0x1'), '127.0.0.1');
+      assert.equal(ip.normalizeIpv4Address('0177.00.00.01'), '127.0.0.1');
+      assert.equal(ip.normalizeIpv4Address('127.0x0.0x0.1'), '127.0.0.1');
+      assert.equal(ip.normalizeIpv4Address('0177.0.0.0x1'), '127.0.0.1');
+    });
+  });
+
+  describe('isOctetHexadecimal() method', () => {
+    it('should detect hexadecimal IP octet', () => {
+      assert.equal(ip.isOctetHexadecimal('0x7f'), true);
+      assert.equal(ip.isOctetHexadecimal('0x7fff'), true);
+      assert.equal(ip.isOctetHexadecimal('0177'), false);
+      assert.equal(ip.isOctetHexadecimal('127'), false);
+    });
+  });
+
+  describe('isOctetOctal() method', () => {
+    it('should detect octal IP octet', () => {
+      assert.equal(ip.isOctetOctal('0x7f'), false);
+      assert.equal(ip.isOctetOctal('0x7fff'), false);
+      assert.equal(ip.isOctetOctal('0177'), true);
+      assert.equal(ip.isOctetOctal('0377'), true);
+      assert.equal(ip.isOctetOctal('127'), false);
     });
   });
 });
