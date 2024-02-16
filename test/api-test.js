@@ -301,6 +301,11 @@ describe('IP library for node.js', () => {
       assert.equal(ip.isPrivate('::ffff:10.100.1.42'), true);
       assert.equal(ip.isPrivate('::FFFF:172.16.200.1'), true);
       assert.equal(ip.isPrivate('::ffff:192.168.0.1'), true);
+      assert.equal(ip.isPrivate('::'), true);
+      assert.equal(ip.isPrivate('::1'), true);
+      assert.equal(ip.isPrivate('fe80::1'), true);
+      assert.equal(ip.isPrivate('0000:0000:0000:0000:0000:0000:0000:0001'), true);
+      assert.equal(ip.isPrivate('0:0:0:0:0:0:0:1'), true);
     });
 
     it('should check if an address is from the internet', () => {
@@ -308,9 +313,11 @@ describe('IP library for node.js', () => {
     });
 
     it('should check if an address is a loopback IPv6 address', () => {
-      assert.equal(ip.isPrivate('::'), true);
-      assert.equal(ip.isPrivate('::1'), true);
-      assert.equal(ip.isPrivate('fe80::1'), true);
+      assert.ok(ip.isLoopback('::'));
+      assert.ok(ip.isLoopback('::1'));
+      assert.ok(ip.isLoopback('fe80::1'));
+      assert.ok(ip.isLoopback('0000:0000:0000:0000:0000:0000:0000:0001'));
+      assert.ok(ip.isLoopback('0:0:0:0:0:0:0:1'));
     });
   });
 
@@ -338,6 +345,7 @@ describe('IP library for node.js', () => {
     describe('Should capture loopsbacks and loopback shorthand', () => {
       it('should respond with true', () => {
         assert.ok(ip.isLoopback('127.0.0.1'));
+        assert.ok(ip.isLoopback('127.1'));
         assert.ok(ip.isLoopback('0x7f.1'));
         assert.ok(ip.isLoopback('0177.1'));
         assert.ok(ip.isLoopback('fe80::1'));
