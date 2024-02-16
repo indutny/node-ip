@@ -344,6 +344,7 @@ describe('IP library for node.js', () => {
       it('should respond with true', () => {
         assert.ok(ip.isLoopback('127.0.0.1'));
         assert.ok(ip.isLoopback('0x7f.1'));
+        assert.ok(ip.isLoopback('0177.1'));
         assert.ok(ip.isLoopback('fe80::1'));
         assert.ok(ip.isLoopback('0000:0000:0000:0000:0000:0000:0000:0001'));
         assert.ok(ip.isLoopback('0:0:0:0:0:0:0:1'));
