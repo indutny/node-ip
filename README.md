@@ -3,6 +3,8 @@
 
 IP address utilities for node.js
 
+You can also try the browser version of this utilities: [browserify-ip](https://github.com/liudonghua123/browserify-ip)
+
 ## Installation
 
 ###  npm
