@@ -12,6 +12,7 @@
     "README.md"
   ],
   "main": "lib/ip",
+  "description": "IP address utilities for node.js",
   "devDependencies": {
     "eslint": "^8.15.0",
     "mocha": "^10.0.0"
