@@ -413,6 +413,12 @@ describe('IP library for node.js', () => {
         assert.ok(ip.isLoopback('::'));
       });
     });
+
+    describe('::FFFF:127.0.0.1', () => {
+      it('should respond with true', () => {
+        assert.ok(ip.isLoopback('::FFFF:127.0.0.1'));
+      });
+    });
   });
 
   describe('address() method', () => {
