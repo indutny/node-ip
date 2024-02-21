@@ -58,10 +58,16 @@ ip.cidrSubnet('192.168.1.134/26')
 // range checking
 ip.cidrSubnet('192.168.1.134/26').contains('192.168.1.190') // true
 
-
 // ipv4 long conversion
 ip.toLong('127.0.0.1'); // 2130706433
 ip.fromLong(2130706433); // '127.0.0.1'
+
+// malformed addresses and normalization
+ip.normalizeStrict('0::01'); // '::1'
+ip.isPrivate('0x7f.1'); // throw error
+ip.normalizeStrict('0x7f.1'); // throw error
+var normalized = ip.normalizeLax('0x7f.1'); // 127.0.0.1
+ip.isPrivate(normalized); // true
 ```
 
 ### License

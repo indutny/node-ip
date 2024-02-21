@@ -251,7 +251,7 @@ describe('IP library for node.js', () => {
     });
   });
 
-  describe('normalizeIpv4() method', () => {
+  describe('normalizeToLong() method', () => {
     // Testing valid inputs with different notations
     it('should correctly normalize "127.0.0.1"', () => {
       assert.equal(ip.normalizeToLong('127.0.0.1'), 2130706433);
@@ -466,6 +466,66 @@ describe('IP library for node.js', () => {
     it('should repond with ipv4 address', () => {
       assert.equal(ip.fromLong(2130706433), '127.0.0.1');
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
+    });
+  });
+
+  describe('normalizeStrict() method', () => {
+    it('should keep valid IPv4 addresses', () => {
+      assert.equal(ip.normalizeStrict('1.1.1.1'), '1.1.1.1');
+    });
+
+    it('should normalize IPv6 leading zeros', () => {
+      assert.equal(ip.normalizeStrict('00:0::000:01'), '::1');
+    });
+
+    it('should normalize IPv6 letter casing', () => {
+      assert.equal(ip.normalizeStrict('aBCd::eF12'), 'abcd::ef12');
+    });
+
+    it('should normalize IPv6 addresses with embedded IPv4 addresses', () => {
+      assert.equal(ip.normalizeStrict('::ffff:7f00:1'), '::ffff:127.0.0.1');
+      assert.equal(ip.normalizeStrict('::1234:5678'), '::18.52.86.120');
+    });
+
+    it('should reject malformed addresses', () => {
+      assert.throws(() => ip.normalizeStrict('127.0.1'));
+      assert.throws(() => ip.normalizeStrict('0x7f.1'));
+      assert.throws(() => ip.normalizeStrict('012.1'));
+    });
+  });
+
+  describe('normalizeLax() method', () => {
+    it('should normalize hex and oct addresses', () => {
+      assert.equal(ip.normalizeLax('0x7f.0x0.0x0.0x1'), '127.0.0.1');
+      assert.equal(ip.normalizeLax('012.34.0X56.0xAb'), '10.34.86.171');
+    });
+
+    it('should normalize 3-part addresses', () => {
+      assert.equal(ip.normalizeLax('192.168.1'), '192.168.0.1');
+    });
+
+    it('should normalize 2-part addresses', () => {
+      assert.equal(ip.normalizeLax('012.3'), '10.0.0.3');
+      assert.equal(ip.normalizeLax('012.0xabcdef'), '10.171.205.239');
+    });
+
+    it('should normalize single integer addresses', () => {
+      assert.equal(ip.normalizeLax('0x7f000001'), '127.0.0.1');
+      assert.equal(ip.normalizeLax('123456789'), '7.91.205.21');
+      assert.equal(ip.normalizeLax('01200034567'), '10.0.57.119');
+    });
+
+    it('should throw on invalid addresses', () => {
+      assert.throws(() => ip.normalizeLax('127.0.0xabcde'));
+      assert.throws(() => ip.normalizeLax('12345678910'));
+      assert.throws(() => ip.normalizeLax('0o1200034567'));
+      assert.throws(() => ip.normalizeLax('127.0.0.0.1'));
+      assert.throws(() => ip.normalizeLax('127.0.0.-1'));
+      assert.throws(() => ip.normalizeLax('-1'));
+    });
+
+    it('should normalize IPv6 leading zeros', () => {
+      assert.equal(ip.normalizeStrict('00:0::000:01'), '::1');
     });
   });
 });
