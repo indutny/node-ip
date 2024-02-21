@@ -352,8 +352,17 @@ describe('IP library for node.js', () => {
       assert.equal(ip.isPrivate('fe80::1'), true);
     });
 
-    it('should correctly identify hexadecimal IP addresses like \'0x7f.1\' as private', () => {
-      assert.equal(ip.isPrivate('0x7f.1'), true);
+    [
+      '0x7f.1',
+      '0300.0XA8.3', // 192.168.0.3
+      '01200034567', // 10.0.57.119
+      '012.1.2.3',   // 10.1.2.3
+    ].forEach((address) => {
+      describe(address, () => {
+        it('should respond with true', () => {
+          assert.equal(ip.isPrivate(address), true);
+        });
+      });
     });
   });
 
@@ -378,39 +387,51 @@ describe('IP library for node.js', () => {
   });
 
   describe('isLoopback() method', () => {
-    describe('127.0.0.1', () => {
-      it('should respond with true', () => {
-        assert.ok(ip.isLoopback('127.0.0.1'));
+    [
+      '127.0.0.1',
+      '127.8.8.8',
+      'fe80::1',
+      'fe80::0001',
+      '::fFFf:127.0.0.1',
+      '::',
+      '::0',
+      '::000',
+      '::1',
+      '::01',
+      '::001',
+      '0::1',
+      '000:0:0000::01',
+      '000:0:0000:0:000:0:00:001',
+      '0177.0.0.1',
+      '0177.0.1',
+      '0177.1',
+      '017700000001',
+      '0x7f.0.0.1',
+      '0x7F.0.1',
+      '0X7f.1',
+      '0X7F000001',
+      '127.0.1',
+      '127.1',
+      '2130706433',
+      '127.00.0x1',
+      '127.0.0x0.1',
+      '0x7f.01',
+    ].forEach((address) => {
+      describe(address, () => {
+        it('should respond with true', () => {
+          assert.equal(ip.isLoopback(address), true);
+        });
       });
     });
 
-    describe('127.8.8.8', () => {
-      it('should respond with true', () => {
-        assert.ok(ip.isLoopback('127.8.8.8'));
-      });
-    });
-
-    describe('8.8.8.8', () => {
-      it('should respond with false', () => {
-        assert.equal(ip.isLoopback('8.8.8.8'), false);
-      });
-    });
-
-    describe('fe80::1', () => {
-      it('should respond with true', () => {
-        assert.ok(ip.isLoopback('fe80::1'));
-      });
-    });
-
-    describe('::1', () => {
-      it('should respond with true', () => {
-        assert.ok(ip.isLoopback('::1'));
-      });
-    });
-
-    describe('::', () => {
-      it('should respond with true', () => {
-        assert.ok(ip.isLoopback('::'));
+    [
+      '8.8.8.8',
+      '192.168.1.1',
+    ].forEach((address) => {
+      describe(address, () => {
+        it('should respond with false', () => {
+          assert.equal(ip.isLoopback(address), false);
+        });
       });
     });
   });
@@ -467,43 +488,5 @@ describe('IP library for node.js', () => {
       assert.equal(ip.fromLong(2130706433), '127.0.0.1');
       assert.equal(ip.fromLong(4294967295), '255.255.255.255');
     });
-  });
-
-  // IPv4 loopback in octal notation
-  it('should return true for octal representation "0177.0.0.1"', () => {
-    assert.equal(ip.isLoopback('0177.0.0.1'), true);
-  });
-
-  it('should return true for octal representation "0177.0.1"', () => {
-    assert.equal(ip.isLoopback('0177.0.1'), true);
-  });
-
-  it('should return true for octal representation "0177.1"', () => {
-    assert.equal(ip.isLoopback('0177.1'), true);
-  });
-
-  // IPv4 loopback in hexadecimal notation
-  it('should return true for hexadecimal representation "0x7f.0.0.1"', () => {
-    assert.equal(ip.isLoopback('0x7f.0.0.1'), true);
-  });
-
-  // IPv4 loopback in hexadecimal notation
-  it('should return true for hexadecimal representation "0x7f.0.1"', () => {
-    assert.equal(ip.isLoopback('0x7f.0.1'), true);
-  });
-
-  // IPv4 loopback in hexadecimal notation
-  it('should return true for hexadecimal representation "0x7f.1"', () => {
-    assert.equal(ip.isLoopback('0x7f.1'), true);
-  });
-
-  // IPv4 loopback as a single long integer
-  it('should return true for single long integer representation "2130706433"', () => {
-    assert.equal(ip.isLoopback('2130706433'), true);
-  });
-
-  // IPv4 non-loopback address
-  it('should return false for "192.168.1.1"', () => {
-    assert.equal(ip.isLoopback('192.168.1.1'), false);
   });
 });
