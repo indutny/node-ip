@@ -528,4 +528,51 @@ describe('IP library for node.js', () => {
       assert.equal(ip.normalizeStrict('00:0::000:01'), '::1');
     });
   });
+
+  describe('isValid(), isV4Format()), isV6Format() methods', () => {
+    it('should validate ipv4 addresses', () => {
+      assert.equal(ip.isValid('1.1.1.1'), true);
+      assert.equal(ip.isValid('1.1.1.1.1'), false);
+      assert.equal(ip.isValid('1.1.1.256'), false);
+      assert.equal(ip.isValid('127.1'), false);
+      assert.equal(ip.isValid('127.0.0.01'), false);
+      assert.equal(ip.isValid('0x7f.0.0.1'), false);
+      assert.equal(ip.isV4Format('1.2.3.4'), true);
+      assert.equal(ip.isV6Format('1.2.3.4'), false);
+    });
+
+    it('should validate ipv6 addresses', () => {
+      assert.equal(ip.isValid('::1'), true);
+      assert.equal(ip.isValid('::1:1.2.3.4'), true);
+      assert.equal(ip.isValid('1::2::3'), false);
+      assert.equal(ip.isV4Format('::ffff:127.0.0.1'), false);
+      assert.equal(ip.isV6Format('::ffff:127.0.0.1'), true);
+    });
+  });
+
+  describe('isValidAndPublic() method', () => {
+    it('should return true on valid public addresses', () => {
+      assert.equal(ip.isValidAndPublic('8.8.8.8'), true);
+    });
+    it('should return false on invalid addresses', () => {
+      assert.equal(ip.isValidAndPublic('8.8.8'), false);
+      assert.equal(ip.isValidAndPublic('8.8.8.010'), false);
+    });
+    it('should return false on valid private addresses', () => {
+      assert.equal(ip.isValidAndPublic('127.0.0.1'), false);
+    });
+  });
+
+  describe('isValidAndPrivate() method', () => {
+    it('should return true on valid private addresses', () => {
+      assert.equal(ip.isValidAndPrivate('192.168.1.2'), true);
+    });
+    it('should return false on invalid addresses', () => {
+      assert.equal(ip.isValidAndPrivate('127.1'), false);
+      assert.equal(ip.isValidAndPrivate('0x7f.0.0.1'), false);
+    });
+    it('should return false on valid public addresses', () => {
+      assert.equal(ip.isValidAndPrivate('8.8.8.8'), false);
+    });
+  });
 });
