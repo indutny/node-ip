@@ -251,7 +251,7 @@ describe('IP library for node.js', () => {
     });
   });
 
-  describe('normalizeIpv4() method', () => {
+  describe('normalizeToLong() method', () => {
     // Testing valid inputs with different notations
     it('should correctly normalize "127.0.0.1"', () => {
       assert.equal(ip.normalizeToLong('127.0.0.1'), 2130706433);
@@ -352,8 +352,8 @@ describe('IP library for node.js', () => {
       assert.equal(ip.isPrivate('fe80::1'), true);
     });
 
-    it('should correctly identify hexadecimal IP addresses like \'0x7f.1\' as private', () => {
-      assert.equal(ip.isPrivate('0x7f.1'), true);
+    it('should reject hexadecimal IP addresses like "0x7f.1"', () => {
+      assert.throws(() => ip.isPrivate('0x7f.1'));
     });
   });
 
@@ -469,41 +469,110 @@ describe('IP library for node.js', () => {
     });
   });
 
-  // IPv4 loopback in octal notation
-  it('should return true for octal representation "0177.0.0.1"', () => {
-    assert.equal(ip.isLoopback('0177.0.0.1'), true);
+  describe('normalizeStrict() method', () => {
+    it('should keep valid IPv4 addresses', () => {
+      assert.equal(ip.normalizeStrict('1.1.1.1'), '1.1.1.1');
+    });
+
+    it('should normalize IPv6 leading zeros', () => {
+      assert.equal(ip.normalizeStrict('00:0::000:01'), '::1');
+    });
+
+    it('should normalize IPv6 letter casing', () => {
+      assert.equal(ip.normalizeStrict('aBCd::eF12'), 'abcd::ef12');
+    });
+
+    it('should normalize IPv6 addresses with embedded IPv4 addresses', () => {
+      assert.equal(ip.normalizeStrict('::ffff:7f00:1'), '::ffff:127.0.0.1');
+      assert.equal(ip.normalizeStrict('::1234:5678'), '::18.52.86.120');
+    });
+
+    it('should reject malformed addresses', () => {
+      assert.throws(() => ip.normalizeStrict('127.0.1'));
+      assert.throws(() => ip.normalizeStrict('0x7f.1'));
+      assert.throws(() => ip.normalizeStrict('012.1'));
+    });
   });
 
-  it('should return true for octal representation "0177.0.1"', () => {
-    assert.equal(ip.isLoopback('0177.0.1'), true);
+  describe('normalizeLax() method', () => {
+    it('should normalize hex and oct addresses', () => {
+      assert.equal(ip.normalizeLax('0x7f.0x0.0x0.0x1'), '127.0.0.1');
+      assert.equal(ip.normalizeLax('012.34.0X56.0xAb'), '10.34.86.171');
+    });
+
+    it('should normalize 3-part addresses', () => {
+      assert.equal(ip.normalizeLax('192.168.1'), '192.168.0.1');
+    });
+
+    it('should normalize 2-part addresses', () => {
+      assert.equal(ip.normalizeLax('012.3'), '10.0.0.3');
+      assert.equal(ip.normalizeLax('012.0xabcdef'), '10.171.205.239');
+    });
+
+    it('should normalize single integer addresses', () => {
+      assert.equal(ip.normalizeLax('0x7f000001'), '127.0.0.1');
+      assert.equal(ip.normalizeLax('123456789'), '7.91.205.21');
+      assert.equal(ip.normalizeLax('01200034567'), '10.0.57.119');
+    });
+
+    it('should throw on invalid addresses', () => {
+      assert.throws(() => ip.normalizeLax('127.0.0xabcde'));
+      assert.throws(() => ip.normalizeLax('12345678910'));
+      assert.throws(() => ip.normalizeLax('0o1200034567'));
+      assert.throws(() => ip.normalizeLax('127.0.0.0.1'));
+      assert.throws(() => ip.normalizeLax('127.0.0.-1'));
+      assert.throws(() => ip.normalizeLax('-1'));
+    });
+
+    it('should normalize IPv6 leading zeros', () => {
+      assert.equal(ip.normalizeStrict('00:0::000:01'), '::1');
+    });
   });
 
-  it('should return true for octal representation "0177.1"', () => {
-    assert.equal(ip.isLoopback('0177.1'), true);
+  describe('isValid(), isV4Format()), isV6Format() methods', () => {
+    it('should validate ipv4 addresses', () => {
+      assert.equal(ip.isValid('1.1.1.1'), true);
+      assert.equal(ip.isValid('1.1.1.1.1'), false);
+      assert.equal(ip.isValid('1.1.1.256'), false);
+      assert.equal(ip.isValid('127.1'), false);
+      assert.equal(ip.isValid('127.0.0.01'), false);
+      assert.equal(ip.isValid('0x7f.0.0.1'), false);
+      assert.equal(ip.isV4Format('1.2.3.4'), true);
+      assert.equal(ip.isV6Format('1.2.3.4'), false);
+    });
+
+    it('should validate ipv6 addresses', () => {
+      assert.equal(ip.isValid('::1'), true);
+      assert.equal(ip.isValid('::1:1.2.3.4'), true);
+      assert.equal(ip.isValid('1::2::3'), false);
+      assert.equal(ip.isV4Format('::ffff:127.0.0.1'), false);
+      assert.equal(ip.isV6Format('::ffff:127.0.0.1'), true);
+    });
   });
 
-  // IPv4 loopback in hexadecimal notation
-  it('should return true for hexadecimal representation "0x7f.0.0.1"', () => {
-    assert.equal(ip.isLoopback('0x7f.0.0.1'), true);
+  describe('isValidAndPublic() method', () => {
+    it('should return true on valid public addresses', () => {
+      assert.equal(ip.isValidAndPublic('8.8.8.8'), true);
+    });
+    it('should return false on invalid addresses', () => {
+      assert.equal(ip.isValidAndPublic('8.8.8'), false);
+      assert.equal(ip.isValidAndPublic('8.8.8.010'), false);
+    });
+    it('should return false on valid private addresses', () => {
+      assert.equal(ip.isValidAndPublic('127.0.0.1'), false);
+    });
   });
 
-  // IPv4 loopback in hexadecimal notation
-  it('should return true for hexadecimal representation "0x7f.0.1"', () => {
-    assert.equal(ip.isLoopback('0x7f.0.1'), true);
-  });
-
-  // IPv4 loopback in hexadecimal notation
-  it('should return true for hexadecimal representation "0x7f.1"', () => {
-    assert.equal(ip.isLoopback('0x7f.1'), true);
-  });
-
-  // IPv4 loopback as a single long integer
-  it('should return true for single long integer representation "2130706433"', () => {
-    assert.equal(ip.isLoopback('2130706433'), true);
-  });
-
-  // IPv4 non-loopback address
-  it('should return false for "192.168.1.1"', () => {
-    assert.equal(ip.isLoopback('192.168.1.1'), false);
+  describe('isValidAndPrivate() method', () => {
+    it('should return true on valid private addresses', () => {
+      assert.equal(ip.isValidAndPrivate('192.168.1.2'), true);
+    });
+    it('should return false on invalid addresses', () => {
+      assert.equal(ip.isValidAndPrivate('127.1'), false);
+      assert.equal(ip.isValidAndPrivate('0x7f.0.0.1'), false);
+    });
+    it('should return false on valid public addresses', () => {
+      assert.equal(ip.isValidAndPrivate('8.8.8.8'), false);
+    });
   });
 });
