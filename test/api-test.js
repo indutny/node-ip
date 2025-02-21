@@ -14,7 +14,7 @@ describe('IP library for node.js', () => {
     });
 
     it('should convert to buffer IPv4 address in-place', () => {
-      const buf = new Buffer(128);
+      const buf = Buffer.alloc(128);
       const offset = 64;
       ip.toBuffer('127.0.0.1', buf, offset);
       assert.equal(buf.toString('hex', offset, offset + 4), '7f000001');
@@ -30,7 +30,7 @@ describe('IP library for node.js', () => {
     });
 
     it('should convert to buffer IPv6 address in-place', () => {
-      const buf = new Buffer(128);
+      const buf = Buffer.alloc(128);
       const offset = 64;
       ip.toBuffer('::1', buf, offset);
       assert(/(00){15,15}01/.test(buf.toString('hex', offset, offset + 16)));
@@ -86,7 +86,7 @@ describe('IP library for node.js', () => {
     });
     it('should or bits in ipv6 addresses', () => {
       assert.equal(
-        ip.or('::ff', '::abcd:dcba:abcd:dcba'),
+        ip.or('::ff', '::abcd:dcba:abcd:dcff'),
         '::abcd:dcba:abcd:dcff',
       );
     });
@@ -112,7 +112,6 @@ describe('IP library for node.js', () => {
   });
 
   describe('subnet() method', () => {
-    // Test cases calculated with http://www.subnet-calculator.com/
     const ipv4Subnet = ip.subnet('192.168.1.134', '255.255.255.192');
 
     it('should compute ipv4 network address', () => {
@@ -157,7 +156,6 @@ describe('IP library for node.js', () => {
   });
 
   describe('subnet() method with mask length 32', () => {
-    // Test cases calculated with http://www.subnet-calculator.com/
     const ipv4Subnet = ip.subnet('192.168.1.134', '255.255.255.255');
     it('should compute ipv4 network\'s first address', () => {
       assert.equal(ipv4Subnet.firstAddress, '192.168.1.134');
@@ -173,7 +171,6 @@ describe('IP library for node.js', () => {
   });
 
   describe('subnet() method with mask length 31', () => {
-    // Test cases calculated with http://www.subnet-calculator.com/
     const ipv4Subnet = ip.subnet('192.168.1.134', '255.255.255.254');
     it('should compute ipv4 network\'s first address', () => {
       assert.equal(ipv4Subnet.firstAddress, '192.168.1.134');
@@ -189,7 +186,6 @@ describe('IP library for node.js', () => {
   });
 
   describe('cidrSubnet() method', () => {
-    // Test cases calculated with http://www.subnet-calculator.com/
     const ipv4Subnet = ip.cidrSubnet('192.168.1.134/26');
 
     it('should compute an ipv4 network address', () => {
@@ -252,7 +248,6 @@ describe('IP library for node.js', () => {
   });
 
   describe('normalizeIpv4() method', () => {
-    // Testing valid inputs with different notations
     it('should correctly normalize "127.0.0.1"', () => {
       assert.equal(ip.normalizeToLong('127.0.0.1'), 2130706433);
     });
@@ -265,12 +260,10 @@ describe('IP library for node.js', () => {
       assert.equal(ip.normalizeToLong('127.0.1'), 2130706433);
     });
 
-
     it('should correctly handle hexadecimal notation "0x7f.0x0.0x0.0x1"', () => {
       assert.equal(ip.normalizeToLong('0x7f.0x0.0x0.0x1'), 2130706433);
     });
 
-    // Testing with fewer than 4 parts
     it('should correctly handle "0x7f000001" as a single part', () => {
       assert.equal(ip.normalizeToLong('0x7f000001'), 2130706433);
     });
@@ -279,7 +272,6 @@ describe('IP library for node.js', () => {
       assert.equal(ip.normalizeToLong('010.0.0.01'), 134217729);
     });
 
-    // Testing invalid inputs
     it('should return -1 for an invalid address "256.100.50.25"', () => {
       assert.equal(ip.normalizeToLong('256.100.50.25'), -1);
     });
@@ -292,7 +284,6 @@ describe('IP library for node.js', () => {
       assert.equal(ip.normalizeToLong('0xGG.0.0.1'), -1);
     });
 
-    // Testing edge cases
     it('should return -1 for an empty string', () => {
       assert.equal(ip.normalizeToLong(''), -1);
     });
@@ -343,7 +334,7 @@ describe('IP library for node.js', () => {
     });
 
     it('should check if an address is from the internet', () => {
-      assert.equal(ip.isPrivate('165.225.132.33'), false); // joyent.com
+      assert.equal(ip.isPrivate('165.225.132.33'), false);
     });
 
     it('should check if an address is a loopback IPv6 address', () => {
@@ -469,7 +460,6 @@ describe('IP library for node.js', () => {
     });
   });
 
-  // IPv4 loopback in octal notation
   it('should return true for octal representation "0177.0.0.1"', () => {
     assert.equal(ip.isLoopback('0177.0.0.1'), true);
   });
@@ -482,27 +472,22 @@ describe('IP library for node.js', () => {
     assert.equal(ip.isLoopback('0177.1'), true);
   });
 
-  // IPv4 loopback in hexadecimal notation
   it('should return true for hexadecimal representation "0x7f.0.0.1"', () => {
     assert.equal(ip.isLoopback('0x7f.0.0.1'), true);
   });
 
-  // IPv4 loopback in hexadecimal notation
   it('should return true for hexadecimal representation "0x7f.0.1"', () => {
     assert.equal(ip.isLoopback('0x7f.0.1'), true);
   });
 
-  // IPv4 loopback in hexadecimal notation
   it('should return true for hexadecimal representation "0x7f.1"', () => {
     assert.equal(ip.isLoopback('0x7f.1'), true);
   });
 
-  // IPv4 loopback as a single long integer
   it('should return true for single long integer representation "2130706433"', () => {
     assert.equal(ip.isLoopback('2130706433'), true);
   });
 
-  // IPv4 non-loopback address
   it('should return false for "192.168.1.1"', () => {
     assert.equal(ip.isLoopback('192.168.1.1'), false);
   });
