@@ -19,6 +19,7 @@
   "scripts": {
     "lint": "eslint lib/*.js test/*.js",
     "test": "npm run lint && mocha --reporter spec test/*-test.js",
+    "testmany": "node test/many.test.js",
     "fix": "npm run lint -- --fix"
   },
   "license": "MIT"
