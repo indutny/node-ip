@@ -565,6 +565,7 @@ describe('IP library for node.js', () => {
     const nonPublicCases = [
       '127.1',            // valid ip4 loopback
       '01200034567',      // valid octal format
+      '017700000001',      // valid octal format
       '012.1.2.3',        // leading-zero octal fragments
       '000:0:0000::01',   // zero-padding IPv6 representation
       '::fFFf:127.0.0.1'  // IPv6 case insensitive case
