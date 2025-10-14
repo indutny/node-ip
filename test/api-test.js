@@ -279,6 +279,10 @@ describe('IP library for node.js', () => {
       assert.equal(ip.normalizeToLong('010.0.0.01'), 134217729);
     });
 
+    it('should correctly handle octal notation "01200034567"', () => {
+      assert.equal(ip.normalizeToLong('01200034567'), 167786871);
+    });
+
     // Testing invalid inputs
     it('should return -1 for an invalid address "256.100.50.25"', () => {
       assert.equal(ip.normalizeToLong('256.100.50.25'), -1);
@@ -378,9 +382,21 @@ describe('IP library for node.js', () => {
   });
 
   describe('isLoopback() method', () => {
-    describe('127.0.0.1', () => {
-      it('should respond with true', () => {
+    describe('127.x loopback range', () => {
+      it('should return true for 127.0.0.1', () => {
         assert.ok(ip.isLoopback('127.0.0.1'));
+      });
+
+      it('should return true for 127.1', () => {
+        assert.ok(ip.isLoopback('127.1'));
+      });
+
+      it('should return true for 127.0.1', () => {
+        assert.ok(ip.isLoopback('127.0.1'));
+      });
+
+      it('should return true for 127.255.255.255 (end of loopback range)', () => {
+        assert.ok(ip.isLoopback('127.255.255.255'));
       });
     });
 
@@ -402,7 +418,19 @@ describe('IP library for node.js', () => {
       });
     });
 
-    describe('::1', () => {
+    describe('::1 loopback range', () => {
+      it('should return true for ::1', () => {
+        assert.ok(ip.isLoopback('::1'));
+      });
+
+      it('should return true for 0:0:0:0:0:0:0:1', () => {
+        assert.ok(ip.isLoopback('0:0:0:0:0:0:0:1'));
+      });
+
+      it('should return true for 000:0:0000::01', () => {
+        assert.ok(ip.isLoopback('000:0:0000::01'));
+      });
+
       it('should respond with true', () => {
         assert.ok(ip.isLoopback('::1'));
       });
@@ -505,5 +533,48 @@ describe('IP library for node.js', () => {
   // IPv4 non-loopback address
   it('should return false for "192.168.1.1"', () => {
     assert.equal(ip.isLoopback('192.168.1.1'), false);
+  });
+
+  describe('isOctalFormat() method', () => {
+    it('should return true for "01200034567"', () => {
+      assert.equal(ip.isOctalFormat('01200034567'), true);
+    });
+
+    it('should return true for "0177.0.0.1"', () => {
+      assert.equal(ip.isOctalFormat('0177.0.0.1'), true);
+    });
+
+    it('should return true for "0177.0.1"', () => {
+      assert.equal(ip.isOctalFormat('0177.0.1'), true);
+    });
+
+    it('should return true for "0177.1"', () => {
+      assert.equal(ip.isOctalFormat('0177.1'), true);
+    });
+
+    it('should return true for "010.0.0.01"', () => {
+      assert.equal(ip.isOctalFormat('010.0.0.01'), true);
+    });
+
+    it('should return true for "019.0.0.1"', () => {
+      assert.equal(ip.isOctalFormat('019.0.0.1'), false);
+    });
+  });
+
+  describe('isPublic (CVE-2024-29415 cases)', () => {
+    const nonPublicCases = [
+      '127.1',            // valid ip4 loopback
+      '01200034567',      // valid octal format
+      '017700000001',      // valid octal format
+      '012.1.2.3',        // leading-zero octal fragments
+      '000:0:0000::01',   // zero-padding IPv6 representation
+      '::fFFf:127.0.0.1'  // IPv6 case insensitive case
+    ];
+
+    nonPublicCases.forEach((ipAddr) =>
+      it(`${ipAddr} should be non-public`, () => {
+        assert.equal(ip.isPublic(ipAddr), false);
+      })
+    );
   });
 });
