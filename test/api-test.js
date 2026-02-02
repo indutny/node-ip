@@ -506,4 +506,41 @@ describe('IP library for node.js', () => {
   it('should return false for "192.168.1.1"', () => {
     assert.equal(ip.isLoopback('192.168.1.1'), false);
   });
+
+  // CVE-2024-29415: SSRF bypass via IPv4 shorthand notation
+  describe('CVE-2024-29415 - IPv4 shorthand loopback detection', () => {
+    it('should detect "127.1" as loopback (shorthand for 127.0.0.1)', () => {
+      assert.equal(ip.isLoopback('127.1'), true);
+    });
+
+    it('should detect "127.0.1" as loopback (shorthand for 127.0.0.1)', () => {
+      assert.equal(ip.isLoopback('127.0.1'), true);
+    });
+
+    it('should detect "127.1" as private', () => {
+      assert.equal(ip.isPrivate('127.1'), true);
+    });
+
+    it('should detect "127.0.1" as private', () => {
+      assert.equal(ip.isPrivate('127.0.1'), true);
+    });
+
+    // Ensure non-loopback shorthand is not falsely detected
+    it('should not detect "192.1" as loopback', () => {
+      assert.equal(ip.isLoopback('192.1'), false);
+    });
+
+    it('should not detect "10.1" as loopback', () => {
+      assert.equal(ip.isLoopback('10.1'), false);
+    });
+
+    // Edge cases at loopback range boundaries
+    it('should not detect "126.255.255.255" as loopback', () => {
+      assert.equal(ip.isLoopback('126.255.255.255'), false);
+    });
+
+    it('should not detect "128.0.0.0" as loopback', () => {
+      assert.equal(ip.isLoopback('128.0.0.0'), false);
+    });
+  });
 });
