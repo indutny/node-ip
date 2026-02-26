@@ -506,4 +506,259 @@ describe('IP library for node.js', () => {
   it('should return false for "192.168.1.1"', () => {
     assert.equal(ip.isLoopback('192.168.1.1'), false);
   });
+
+  // ==========================================================================
+  // SSRF Bypass Pattern Tests (CVE-2024-29415, CVE-2025-59436)
+  // ==========================================================================
+  // These tests verify that known SSRF bypass patterns are correctly
+  // identified as private/loopback addresses to prevent SSRF attacks.
+  // ==========================================================================
+
+  describe('SSRF Bypass Prevention (CVE-2024-29415)', () => {
+    describe('Null route "0" bypass (Issue #160)', () => {
+      // The "0" input resolves to 0.0.0.0 which is a reserved address
+      // and should be treated as private to prevent SSRF attacks.
+      // Attack vector: http://0:3000/admin -> accesses localhost
+
+      it('should identify "0" as private (null route)', () => {
+        assert.equal(ip.isPrivate('0'), true);
+        assert.equal(ip.isPublic('0'), false);
+      });
+
+      it('should identify "0" as loopback', () => {
+        assert.equal(ip.isLoopback('0'), true);
+      });
+
+      it('should identify "0.0.0.0" as private', () => {
+        assert.equal(ip.isPrivate('0.0.0.0'), true);
+        assert.equal(ip.isPublic('0.0.0.0'), false);
+      });
+    });
+
+    describe('32-bit octal format bypass (Issue #162, CVE-2025-59436)', () => {
+      // The input "017700000001" is a 32-bit octal representation
+      // that equals 127.0.0.1 (localhost).
+      // parseInt("017700000001", 8) = 2130706433 = 127.0.0.1
+      // Attack vector: http://017700000001:3000/admin -> accesses localhost
+
+      it('should identify "017700000001" as private (32-bit octal localhost)', () => {
+        assert.equal(ip.isPrivate('017700000001'), true);
+        assert.equal(ip.isPublic('017700000001'), false);
+      });
+
+      it('should identify "017700000001" as loopback', () => {
+        assert.equal(ip.isLoopback('017700000001'), true);
+      });
+
+      it('should identify "0x7f000001" as private (32-bit hex localhost)', () => {
+        assert.equal(ip.isPrivate('0x7f000001'), true);
+        assert.equal(ip.isPublic('0x7f000001'), false);
+      });
+
+      it('should identify "0x7f000001" as loopback', () => {
+        assert.equal(ip.isLoopback('0x7f000001'), true);
+      });
+    });
+
+    describe('Short-form IP bypass (Issue #150)', () => {
+      // Short-form IPs like "127.1" are interpreted as "127.0.0.1"
+      // by network stacks, allowing SSRF bypass.
+      // Attack vector: http://127.1:3000/admin -> accesses localhost
+
+      it('should identify "127.1" as private', () => {
+        assert.equal(ip.isPrivate('127.1'), true);
+        assert.equal(ip.isPublic('127.1'), false);
+      });
+
+      it('should identify "127.1" as loopback', () => {
+        assert.equal(ip.isLoopback('127.1'), true);
+      });
+
+      it('should identify "127.0.1" as private', () => {
+        assert.equal(ip.isPrivate('127.0.1'), true);
+        assert.equal(ip.isPublic('127.0.1'), false);
+      });
+
+      it('should identify "127.0.1" as loopback', () => {
+        assert.equal(ip.isLoopback('127.0.1'), true);
+      });
+
+      it('should identify "10.1" as private (10.0.0.1)', () => {
+        assert.equal(ip.isPrivate('10.1'), true);
+        assert.equal(ip.isPublic('10.1'), false);
+      });
+
+      it('should identify "192.168.1" as private (192.168.0.1)', () => {
+        assert.equal(ip.isPrivate('192.168.1'), true);
+        assert.equal(ip.isPublic('192.168.1'), false);
+      });
+    });
+
+    describe('Octal notation bypass (Issue #150)', () => {
+      // Octal notation like "0177.0.0.1" equals 127.0.0.1
+      // Attack vector: http://0177.0.0.1:3000/admin -> accesses localhost
+
+      it('should identify "0177.0.0.1" as private', () => {
+        assert.equal(ip.isPrivate('0177.0.0.1'), true);
+        assert.equal(ip.isPublic('0177.0.0.1'), false);
+      });
+
+      it('should identify "0177.1" as private', () => {
+        assert.equal(ip.isPrivate('0177.1'), true);
+        assert.equal(ip.isPublic('0177.1'), false);
+      });
+
+      it('should identify "012.1.2.3" as private (octal 10.x.x.x)', () => {
+        // 012 in octal = 10 in decimal
+        assert.equal(ip.isPrivate('012.1.2.3'), true);
+        assert.equal(ip.isPublic('012.1.2.3'), false);
+      });
+    });
+
+    describe('Hexadecimal notation bypass (Issue #150)', () => {
+      // Hexadecimal notation like "0x7f.0.0.1" equals 127.0.0.1
+      // Attack vector: http://0x7f.0.0.1:3000/admin -> accesses localhost
+
+      it('should identify "0x7f.0.0.1" as private', () => {
+        assert.equal(ip.isPrivate('0x7f.0.0.1'), true);
+        assert.equal(ip.isPublic('0x7f.0.0.1'), false);
+      });
+
+      it('should identify "0x7f.1" as private', () => {
+        assert.equal(ip.isPrivate('0x7f.1'), true);
+        assert.equal(ip.isPublic('0x7f.1'), false);
+      });
+
+      it('should identify "0x0a.0.0.1" as private (hex 10.0.0.1)', () => {
+        assert.equal(ip.isPrivate('0x0a.0.0.1'), true);
+        assert.equal(ip.isPublic('0x0a.0.0.1'), false);
+      });
+    });
+
+    describe('IPv6 loopback variations (Issue #150)', () => {
+      // Various IPv6 representations of loopback address
+      // Attack vector: http://[::1]:3000/admin -> accesses localhost
+
+      it('should identify "::1" as private', () => {
+        assert.equal(ip.isPrivate('::1'), true);
+        assert.equal(ip.isPublic('::1'), false);
+      });
+
+      it('should identify "0:0:0:0:0:0:0:1" as private (expanded ::1)', () => {
+        assert.equal(ip.isPrivate('0:0:0:0:0:0:0:1'), true);
+        assert.equal(ip.isPublic('0:0:0:0:0:0:0:1'), false);
+      });
+
+      it('should identify "0000:0000:0000:0000:0000:0000:0000:0001" as private', () => {
+        assert.equal(ip.isPrivate('0000:0000:0000:0000:0000:0000:0000:0001'), true);
+        assert.equal(ip.isPublic('0000:0000:0000:0000:0000:0000:0000:0001'), false);
+      });
+
+      it('should identify "::1" as loopback', () => {
+        assert.equal(ip.isLoopback('::1'), true);
+      });
+
+      it('should identify "0:0:0:0:0:0:0:1" as loopback', () => {
+        assert.equal(ip.isLoopback('0:0:0:0:0:0:0:1'), true);
+      });
+
+      it('should identify "::" as private (unspecified address)', () => {
+        assert.equal(ip.isPrivate('::'), true);
+        assert.equal(ip.isPublic('::'), false);
+      });
+    });
+
+    describe('IPv6-mapped IPv4 bypass (Issue #150, #122)', () => {
+      // IPv6-mapped IPv4 addresses like "::ffff:127.0.0.1" contain
+      // an embedded IPv4 address that should be checked.
+      // Attack vector: http://[::ffff:127.0.0.1]:3000/admin -> accesses localhost
+
+      it('should identify "::ffff:127.0.0.1" as private (dot notation)', () => {
+        assert.equal(ip.isPrivate('::ffff:127.0.0.1'), true);
+        assert.equal(ip.isPublic('::ffff:127.0.0.1'), false);
+      });
+
+      it('should identify "::ffff:7f00:1" as private (hex notation)', () => {
+        assert.equal(ip.isPrivate('::ffff:7f00:1'), true);
+        assert.equal(ip.isPublic('::ffff:7f00:1'), false);
+      });
+
+      it('should identify "::ffff:7f00:0001" as private', () => {
+        assert.equal(ip.isPrivate('::ffff:7f00:0001'), true);
+        assert.equal(ip.isPublic('::ffff:7f00:0001'), false);
+      });
+
+      it('should identify "0:0:0:0:0:ffff:127.0.0.1" as private (expanded)', () => {
+        assert.equal(ip.isPrivate('0:0:0:0:0:ffff:127.0.0.1'), true);
+        assert.equal(ip.isPublic('0:0:0:0:0:ffff:127.0.0.1'), false);
+      });
+
+      it('should identify "::ffff:10.0.0.1" as private', () => {
+        assert.equal(ip.isPrivate('::ffff:10.0.0.1'), true);
+        assert.equal(ip.isPublic('::ffff:10.0.0.1'), false);
+      });
+
+      it('should identify "::ffff:192.168.1.1" as private', () => {
+        assert.equal(ip.isPrivate('::ffff:192.168.1.1'), true);
+        assert.equal(ip.isPublic('::ffff:192.168.1.1'), false);
+      });
+
+      it('should identify "::ffff:172.16.0.1" as private', () => {
+        assert.equal(ip.isPrivate('::ffff:172.16.0.1'), true);
+        assert.equal(ip.isPublic('::ffff:172.16.0.1'), false);
+      });
+
+      it('should identify "::FFFF:127.0.0.1" as private (uppercase)', () => {
+        assert.equal(ip.isPrivate('::FFFF:127.0.0.1'), true);
+        assert.equal(ip.isPublic('::FFFF:127.0.0.1'), false);
+      });
+
+      it('should correctly identify public IPv6-mapped addresses', () => {
+        // 8.8.8.8 is Google DNS - a public address
+        assert.equal(ip.isPrivate('::ffff:8.8.8.8'), false);
+        assert.equal(ip.isPublic('::ffff:8.8.8.8'), true);
+      });
+    });
+
+    describe('Decimal/Long integer format bypass', () => {
+      // Long integer format like "2130706433" equals 127.0.0.1
+      // Attack vector: http://2130706433:3000/admin -> accesses localhost
+
+      it('should identify "2130706433" as loopback (127.0.0.1 as long)', () => {
+        assert.equal(ip.isLoopback('2130706433'), true);
+      });
+
+      it('should identify "167772161" as private (10.0.0.1 as long)', () => {
+        // 10.0.0.1 = (10 << 24) + 1 = 167772161
+        assert.equal(ip.isPrivate('167772161'), true);
+        assert.equal(ip.isPublic('167772161'), false);
+      });
+
+      it('should identify public addresses in long format correctly', () => {
+        // 8.8.8.8 = (8 << 24) + (8 << 16) + (8 << 8) + 8 = 134744072
+        assert.equal(ip.isPrivate('134744072'), false);
+        assert.equal(ip.isPublic('134744072'), true);
+      });
+    });
+
+    describe('Edge cases and regression tests', () => {
+      it('should still correctly identify standard public IPs', () => {
+        assert.equal(ip.isPublic('8.8.8.8'), true);
+        assert.equal(ip.isPublic('1.1.1.1'), true);
+        assert.equal(ip.isPublic('208.67.222.222'), true);
+      });
+
+      it('should still correctly identify standard private IPs', () => {
+        assert.equal(ip.isPrivate('10.0.0.1'), true);
+        assert.equal(ip.isPrivate('172.16.0.1'), true);
+        assert.equal(ip.isPrivate('192.168.0.1'), true);
+        assert.equal(ip.isPrivate('127.0.0.1'), true);
+      });
+
+      it('should throw on invalid addresses', () => {
+        assert.throws(() => ip.isPrivate('invalid'), /invalid/i);
+        assert.throws(() => ip.isPrivate('256.0.0.1'), /invalid/i);
+      });
+    });
+  });
 });
