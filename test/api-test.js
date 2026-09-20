@@ -302,6 +302,28 @@ describe('IP library for node.js', () => {
     });
   });
 
+  describe('isV4Format() method', () => {
+    it('should accept a valid IPv4 address', () => {
+      assert.equal(ip.isV4Format('127.0.0.1'), true);
+      assert.equal(ip.isV4Format('255.255.255.255'), true);
+      assert.equal(ip.isV4Format('0.0.0.0'), true);
+    });
+
+    it('should reject addresses with octets greater than 255', () => {
+      assert.equal(ip.isV4Format('999.999.999.999'), false);
+      assert.equal(ip.isV4Format('256.1.1.1'), false);
+      assert.equal(ip.isV4Format('1.256.1.1'), false);
+      assert.equal(ip.isV4Format('1.1.256.1'), false);
+      assert.equal(ip.isV4Format('1.1.1.256'), false);
+    });
+
+    it('should reject non-IPv4 strings', () => {
+      assert.equal(ip.isV4Format('127.0.0'), false);
+      assert.equal(ip.isV4Format('::1'), false);
+      assert.equal(ip.isV4Format('not-an-ip'), false);
+    });
+  });
+
   describe('isPrivate() method', () => {
     it('should check if an address is localhost', () => {
       assert.equal(ip.isPrivate('127.0.0.1'), true);
